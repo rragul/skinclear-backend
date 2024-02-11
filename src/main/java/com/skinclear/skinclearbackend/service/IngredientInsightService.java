@@ -19,4 +19,7 @@ public class IngredientInsightService {
         return ingredientInsightRepository.findAll();
     }
 
+    public List<IngredientInsight> getRandomImages(int limit) {
+        return ingredientInsightRepository.findRandomImages(limit);
+    }
 }
