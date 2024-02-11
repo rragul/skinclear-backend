@@ -13,4 +13,6 @@ public interface IngredientInsightRepository extends JpaRepository<IngredientIns
     @Query(value = "SELECT * FROM ingredient_insight ORDER BY RANDOM() LIMIT ?1", nativeQuery = true)
     List<IngredientInsight> findRandomImages(@Param("limit") int limit);
 
+    @Query(value = "SELECT * FROM ingredient_insight WHERE id IN (:ids)", nativeQuery = true)
+    List<IngredientInsight> findIngredientInsightByIds(@Param("ids") List<Long> ids);
 }
