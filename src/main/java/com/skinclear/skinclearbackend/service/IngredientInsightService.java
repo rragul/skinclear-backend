@@ -22,4 +22,8 @@ public class IngredientInsightService {
     public List<IngredientInsight> getRandomImages(int limit) {
         return ingredientInsightRepository.findRandomImages(limit);
     }
+
+    public  List<IngredientInsight> getSelectedIngredientInsight(List<Long> selectedIdList){
+        return  ingredientInsightRepository.findIngredientInsightByIds(selectedIdList);
+    }
 }

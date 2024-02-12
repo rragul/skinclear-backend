@@ -16,7 +16,7 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String whatItIsId;
+    private String typeId;
     private String whatItDoes;
     private String benefitsId;
     private String otherNames;
