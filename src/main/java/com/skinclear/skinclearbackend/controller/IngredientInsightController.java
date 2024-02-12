@@ -1,7 +1,9 @@
 package com.skinclear.skinclearbackend.controller;
 
 import com.skinclear.skinclearbackend.entity.IngredientInsight;
+import com.skinclear.skinclearbackend.resource.IconResource;
 import com.skinclear.skinclearbackend.service.IngredientInsightService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/v1/ingredient-insight")
-public class IngredientInsightController {
+public class IngredientInsightController extends AbstractController{
 
     private final IngredientInsightService ingredientInsightService;
 
@@ -23,7 +25,8 @@ public class IngredientInsightController {
     }
 
     @GetMapping("/random-images")
-    public List<IngredientInsight> getRandomImages(@RequestParam(value = "limit", defaultValue = "28") int limit) {
-        return ingredientInsightService.getRandomImages(limit);
+    public ResponseEntity<Object> getRandomImages(@RequestParam(value = "limit", defaultValue = "28") int limit) {
+       List<IconResource> icons = ingredientInsightService.getRandomImages(limit);
+       return sendSuccessResponse(icons);
     }
 }
