@@ -2,6 +2,7 @@ package com.skinclear.skinclearbackend.controller;
 
 
 import com.skinclear.skinclearbackend.entity.Ingredient;
+import com.skinclear.skinclearbackend.resource.IngredientResource;
 import com.skinclear.skinclearbackend.resource.IngredientsDictionaryResponseResource;
 import com.skinclear.skinclearbackend.service.IngredientService;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,12 @@ public class IngredientController extends AbstractController{
     public ResponseEntity<Object> getStructuredIngredients(@RequestParam int page, @RequestParam int size){
         IngredientsDictionaryResponseResource ingredientResponseResource = ingredientService.getStructuredIngredients(page, size);
         return sendSuccessResponse(ingredientResponseResource);
+    }
+
+    @GetMapping("/structured/{id}")
+    public ResponseEntity<Object> getStructuredIngredient(@PathVariable Long id){
+        IngredientResource ingredient = ingredientService.getIngredientById(id);
+        return sendSuccessResponse(ingredient);
     }
 
     @GetMapping("/unstructured")

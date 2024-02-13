@@ -1,7 +1,9 @@
 package com.skinclear.skinclearbackend.service;
 
 import com.skinclear.skinclearbackend.entity.Ingredient;
+import com.skinclear.skinclearbackend.exception.NotFoundException;
 import com.skinclear.skinclearbackend.repository.IngredientRepository;
+import com.skinclear.skinclearbackend.resource.IngredientResource;
 import com.skinclear.skinclearbackend.resource.IngredientsDictionaryResponseResource;
 import com.skinclear.skinclearbackend.resource.IngredientDictionaryResource;
 import org.springframework.data.domain.Page;
@@ -61,6 +63,28 @@ public class IngredientService {
             ingredientsResources.add(ingredientsResource);
         }
         return ingredientsResources;
+    }
+
+    public IngredientResource getIngredientById(Long id) {
+        try {
+            Ingredient ingredient = ingredientRepository.findById(id).get();
+            IngredientResource ingredientResource = new IngredientResource();
+            ingredientResource.setName(ingredient.getName());
+            // TODO: need to change product count
+            ingredientResource.setProductCount(10);
+            ingredientResource.setWhatItIs(ingredientInsightService.getSelectedIngredientInsight(getLongIds(ingredient.getTypeId())));
+            ingredientResource.setWhatItDoes(getStringList(ingredient.getWhatItDoes()));
+            ingredientResource.setBenefits(ingredientInsightService.getSelectedIngredientInsight(getLongIds(ingredient.getBenefitsId())));
+            ingredientResource.setConcerns(ingredientInsightService.getSelectedIngredientInsight(getLongIds(ingredient.getConcernId())));
+            ingredientResource.setAlsoKnownAs(ingredient.getOtherNames());
+            ingredientResource.setExplain(ingredient.getExplain());
+            ingredientResource.setRarity(ingredient.getRarity());
+            // TODO: need to change with product
+            ingredientResource.setProducts(null);
+            return ingredientResource;
+        } catch (Exception e) {
+            throw new NotFoundException("Ingredient not found");
+        }
     }
 
     public  List<Ingredient> getUnstructuredIngredients(){
