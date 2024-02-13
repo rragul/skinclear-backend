@@ -1,9 +1,11 @@
 package com.skinclear.skinclearbackend.service;
 
 import com.skinclear.skinclearbackend.entity.Ingredient;
-import com.skinclear.skinclearbackend.entity.IngredientInsight;
 import com.skinclear.skinclearbackend.repository.IngredientRepository;
-import com.skinclear.skinclearbackend.resource.IngredientsResource;
+import com.skinclear.skinclearbackend.resource.IngredientsDictionaryResponseResource;
+import com.skinclear.skinclearbackend.resource.IngredientDictionaryResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,35 +23,44 @@ public class IngredientService {
         this.ingredientInsightService = ingredientInsightService;
     }
 
-    public List<IngredientsResource> getIngredients() {
-       List<Ingredient> ingredients = ingredientRepository.findAll();
-       List<IngredientsResource> ingredientsResources =  new ArrayList<>();
+    public IngredientsDictionaryResponseResource getStructuredIngredients(int page, int size) {
+        List<IngredientDictionaryResource> ingredientsResources = getIngredientsWithPagination(page, size);
+        IngredientsDictionaryResponseResource ingredientResponseResource = new IngredientsDictionaryResponseResource();
+        ingredientResponseResource.setIngredients(ingredientsResources);
+        ingredientResponseResource.setTotalIngredients(ingredientRepository.count());
+        return ingredientResponseResource;
+    }
 
-        for (Ingredient ingredient : ingredients) {
-            IngredientsResource ingredientsResource = new IngredientsResource();
 
-            List<IngredientInsight> typelist =
-                    ingredientInsightService.getSelectedIngredientInsight(getLongIds(ingredient.getTypeId()));
-            List<IngredientInsight> benefitsList =
-                    ingredientInsightService.getSelectedIngredientInsight(getLongIds(ingredient.getBenefitsId()));
-            List<IngredientInsight> concernList =
-                    ingredientInsightService.getSelectedIngredientInsight(getLongIds(ingredient.getConcernId()));
-
+    public List<IngredientDictionaryResource> getIngredientsWithPagination(int page, int size) {
+        Page<Ingredient> ingredients = ingredientRepository.findAll(PageRequest.of(page, size));
+        List<IngredientDictionaryResource> ingredientsResources =  new ArrayList<>();
+        for (Ingredient ingredient : ingredients.getContent()) {
+            IngredientDictionaryResource ingredientsResource = new IngredientDictionaryResource();
             ingredientsResource.setId(ingredient.getId());
             ingredientsResource.setName(ingredient.getName());
-            ingredientsResource.setTypelist(typelist);
-            ingredientsResource.setWhatItDoes(getStringList(ingredient.getWhatItDoes()));
-            ingredientsResource.setBenefitsList(benefitsList);
-            ingredientsResource.setOtherNames(ingredient.getOtherNames());
-            ingredientsResource.setConcernList(concernList);
-            ingredientsResource.setRarity(ingredient.getRarity());
+            //TODO: need to change product count
+            ingredientsResource.setProductCount(10);
+            if (ingredient.getLikeCount() == null) {
+                ingredient.setLikeCount(0);
+            }
+            if (ingredient.getDislikeCount() == null) {
+                ingredient.setDislikeCount(0);
+            }
             ingredientsResource.setLikeCount(ingredient.getLikeCount());
             ingredientsResource.setDislikeCount(ingredient.getDislikeCount());
-            ingredientsResource.setExplain(ingredient.getExplain());
+            List<Long> benefitsId = getLongIds(ingredient.getBenefitsId());
+            List<Long> concernsId = getLongIds(ingredient.getConcernId());
+            List<Long> typesId = getLongIds(ingredient.getTypeId());
+            List<Long> ids = new ArrayList<>();
+            ids.addAll(benefitsId);
+            ids.addAll(concernsId);
+            ids.addAll(typesId);
+            ingredientsResource.setImages(ingredientInsightService.getSelectedIngredientInsightImages(ids));
+            ingredientsResource.setWhatItDoes(getStringList(ingredient.getWhatItDoes()));
             ingredientsResources.add(ingredientsResource);
         }
-
-       return ingredientsResources;
+        return ingredientsResources;
     }
 
     public  List<Ingredient> getUnstructuredIngredients(){

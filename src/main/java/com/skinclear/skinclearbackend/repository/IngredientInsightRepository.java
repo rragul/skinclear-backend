@@ -15,4 +15,7 @@ public interface IngredientInsightRepository extends JpaRepository<IngredientIns
 
     @Query(value = "SELECT * FROM ingredient_insight WHERE id IN (:ids)", nativeQuery = true)
     List<IngredientInsight> findIngredientInsightByIds(@Param("ids") List<Long> ids);
+
+    @Query(value = "SELECT image FROM ingredient_insight WHERE id IN (:ids)", nativeQuery = true)
+    List<String> findIngredientInsightImageByIds(@Param("ids") List<Long> ids);
 }

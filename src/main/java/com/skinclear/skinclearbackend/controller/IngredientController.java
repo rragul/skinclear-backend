@@ -2,8 +2,9 @@ package com.skinclear.skinclearbackend.controller;
 
 
 import com.skinclear.skinclearbackend.entity.Ingredient;
-import com.skinclear.skinclearbackend.resource.IngredientsResource;
+import com.skinclear.skinclearbackend.resource.IngredientsDictionaryResponseResource;
 import com.skinclear.skinclearbackend.service.IngredientService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/v1/ingredient")
-public class IngredientController {
+public class IngredientController extends AbstractController{
 
     private  final IngredientService ingredientService;
 
@@ -19,9 +20,10 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    @GetMapping
-    public List<IngredientsResource> getIngredients(){
-        return  ingredientService.getIngredients();
+    @GetMapping("/structured")
+    public ResponseEntity<Object> getStructuredIngredients(@RequestParam int page, @RequestParam int size){
+        IngredientsDictionaryResponseResource ingredientResponseResource = ingredientService.getStructuredIngredients(page, size);
+        return sendSuccessResponse(ingredientResponseResource);
     }
 
     @GetMapping("/unstructured")

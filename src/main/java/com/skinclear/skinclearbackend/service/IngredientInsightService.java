@@ -35,4 +35,7 @@ public class IngredientInsightService {
     public  List<IngredientInsight> getSelectedIngredientInsight(List<Long> selectedIdList){
         return  ingredientInsightRepository.findIngredientInsightByIds(selectedIdList);
     }
+    public  List<String> getSelectedIngredientInsightImages(List<Long> selectedIdList){
+        return  ingredientInsightRepository.findIngredientInsightImageByIds(selectedIdList);
+    }
 }
