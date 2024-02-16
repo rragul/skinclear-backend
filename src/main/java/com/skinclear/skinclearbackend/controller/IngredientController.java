@@ -37,4 +37,6 @@ public class IngredientController extends AbstractController{
     public  List<Ingredient> getUnstructuredIngredient(){
         return  ingredientService.getUnstructuredIngredients();
     }
+
+
 }
