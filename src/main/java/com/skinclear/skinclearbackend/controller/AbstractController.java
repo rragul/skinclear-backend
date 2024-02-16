@@ -25,6 +25,9 @@ public class AbstractController {
         return ResponseEntity.ok().body(new SkinClearResponseResource(object, codeStatusMap.get(200)));
     }
 
+    public ResponseEntity<Object> sendErrorResponse(Object object) {
+        return ResponseEntity.badRequest().body(new SkinClearResponseResource(object, codeStatusMap.get(400)));
+    }
 
     public ResponseEntity<Object> sendSuccessResponseWithHeader(String header, Object objectHeader, Object entity) {
         HttpHeaders headers = new HttpHeaders();

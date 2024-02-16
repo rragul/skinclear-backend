@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IngredientInsightRepository extends JpaRepository<IngredientInsight, Long> {
@@ -27,5 +28,6 @@ public interface IngredientInsightRepository extends JpaRepository<IngredientIns
     @Query(value = "SELECT image FROM ingredient_insight WHERE id IN (:ids)", nativeQuery = true)
     List<String> findIngredientInsightImageByIds(@Param("ids") List<Long> ids);
 
+    Optional<IngredientInsight> findByName(@NonNull String name);
 
 }

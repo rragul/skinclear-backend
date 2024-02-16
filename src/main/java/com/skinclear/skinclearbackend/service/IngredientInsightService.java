@@ -45,16 +45,20 @@ public class IngredientInsightService {
         return iconResources;
     }
 
-    public  void addIngredientInsight(IngredientInsight ingredientInsight){
+    public boolean addIngredientInsight(IngredientInsight ingredientInsight){
+        if(ingredientInsightRepository.findByName(ingredientInsight.getName()).isPresent()){
+            return false;
+        }
         ingredientInsightRepository.save(ingredientInsight);
+        return true;
     }
 
 
-    public  List<IngredientInsight> getSelectedIngredientInsight(List<Long> selectedIdList){
-        return  ingredientInsightRepository.findIngredientInsightByIds(selectedIdList);
+    public List<IngredientInsight> getSelectedIngredientInsight(List<Long> selectedIdList){
+        return ingredientInsightRepository.findIngredientInsightByIds(selectedIdList);
     }
 
-    public  List<String> getSelectedIngredientInsightImages(List<Long> selectedIdList){
-        return  ingredientInsightRepository.findIngredientInsightImageByIds(selectedIdList);
+    public List<String> getSelectedIngredientInsightImages(List<Long> selectedIdList){
+        return ingredientInsightRepository.findIngredientInsightImageByIds(selectedIdList);
     }
 }

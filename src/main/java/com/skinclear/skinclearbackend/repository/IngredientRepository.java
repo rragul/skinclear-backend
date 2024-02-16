@@ -22,5 +22,7 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long>{
     @Override
     Optional<Ingredient> findById(@NonNull Long id);
 
+    Optional<Ingredient> findByName(@NonNull String name);
+
     long count();
 }

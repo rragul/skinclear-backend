@@ -33,7 +33,12 @@ public class IngredientInsightController extends AbstractController{
     }
 
     @PostMapping("/add")
-    public  void postIngredientInsights(@RequestBody IngredientInsight ingredientInsight){
-        ingredientInsightService.addIngredientInsight(ingredientInsight);
+    public ResponseEntity<Object> addIngredientInsights(@RequestBody IngredientInsight ingredientInsight){
+        boolean isAdded = ingredientInsightService.addIngredientInsight(ingredientInsight);
+        if(isAdded){
+            return sendSuccessResponse("Ingredient Insight added successfully");
+        }
+        return sendErrorResponse("Ingredient Insight already exists");
+
     }
 }
