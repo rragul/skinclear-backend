@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class IngredientInsightService {
@@ -60,5 +61,28 @@ public class IngredientInsightService {
 
     public List<String> getSelectedIngredientInsightImages(List<Long> selectedIdList){
         return ingredientInsightRepository.findIngredientInsightImageByIds(selectedIdList);
+    }
+
+    public boolean updateIngredientInsight(IngredientInsight ingredientInsight, Long id) {
+        Optional<IngredientInsight> existingInsightOptional = ingredientInsightRepository.findById(id);
+
+        if (existingInsightOptional.isPresent()) {
+            IngredientInsight existingInsight = existingInsightOptional.get();
+            existingInsight.updateFrom(ingredientInsight);
+            ingredientInsightRepository.save(existingInsight);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean deleteIngredientInsight(List<Long> ids) {
+        for (Long id : ids) {
+            if(ingredientInsightRepository.findById(id).isEmpty()){
+                return false;
+            }
+        }
+        ingredientInsightRepository.deleteAll(ingredientInsightRepository.findAllById(ids));
+        return true;
     }
 }

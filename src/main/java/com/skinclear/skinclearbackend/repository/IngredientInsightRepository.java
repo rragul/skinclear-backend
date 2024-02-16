@@ -29,5 +29,4 @@ public interface IngredientInsightRepository extends JpaRepository<IngredientIns
     List<String> findIngredientInsightImageByIds(@Param("ids") List<Long> ids);
 
     Optional<IngredientInsight> findByName(@NonNull String name);
-
 }

@@ -4,6 +4,7 @@ import com.skinclear.skinclearbackend.entity.IngredientInsight;
 import com.skinclear.skinclearbackend.resource.IconResource;
 import com.skinclear.skinclearbackend.resource.IngredientInsightsResponseResource;
 import com.skinclear.skinclearbackend.service.IngredientInsightService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,12 +34,30 @@ public class IngredientInsightController extends AbstractController{
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> addIngredientInsights(@RequestBody IngredientInsight ingredientInsight){
+    public ResponseEntity<String> addIngredientInsights(@RequestBody IngredientInsight ingredientInsight) {
         boolean isAdded = ingredientInsightService.addIngredientInsight(ingredientInsight);
-        if(isAdded){
-            return sendSuccessResponse("Ingredient Insight added successfully");
+        if (isAdded) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("Ingredient Insight added successfully");
         }
-        return sendErrorResponse("Ingredient Insight already exists");
-
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Ingredient Insight already exists");
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateIngredientInsights(@RequestBody IngredientInsight ingredientInsight, @PathVariable Long id) {
+        boolean isUpdated = ingredientInsightService.updateIngredientInsight(ingredientInsight, id);
+        if (isUpdated) {
+            return ResponseEntity.ok("Ingredient Insight updated successfully");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ingredient Insight does not exist");
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Object> deleteIngredientInsights(@RequestParam(value = "ids") List<Long> ids) {
+        boolean isDeleted = ingredientInsightService.deleteIngredientInsight(ids);
+        if (isDeleted) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ingredient Insight does not exist");
+    }
+
 }
