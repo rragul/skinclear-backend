@@ -4,6 +4,7 @@ import com.skinclear.skinclearbackend.entity.IngredientInsight;
 import com.skinclear.skinclearbackend.repository.IngredientInsightRepository;
 import com.skinclear.skinclearbackend.resource.IconResource;
 import com.skinclear.skinclearbackend.resource.IngredientInsightsResponseResource;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -63,13 +64,13 @@ public class IngredientInsightService {
         return ingredientInsightRepository.findIngredientInsightImageByIds(selectedIdList);
     }
 
+    @Transactional
     public boolean updateIngredientInsight(IngredientInsight ingredientInsight, Long id) {
         Optional<IngredientInsight> existingInsightOptional = ingredientInsightRepository.findById(id);
 
         if (existingInsightOptional.isPresent()) {
             IngredientInsight existingInsight = existingInsightOptional.get();
             existingInsight.updateFrom(ingredientInsight);
-            ingredientInsightRepository.save(existingInsight);
             return true;
         }
 
