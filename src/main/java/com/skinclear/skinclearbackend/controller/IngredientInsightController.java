@@ -52,7 +52,7 @@ public class IngredientInsightController extends AbstractController{
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Object> deleteIngredientInsights(@RequestParam(value = "ids") List<Long> ids) {
+    public ResponseEntity<Object> deleteIngredientInsights(@RequestBody List<Long> ids) {
         boolean isDeleted = ingredientInsightService.deleteIngredientInsight(ids);
         if (isDeleted) {
             return ResponseEntity.noContent().build();
