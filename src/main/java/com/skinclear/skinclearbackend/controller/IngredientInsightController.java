@@ -44,11 +44,11 @@ public class IngredientInsightController extends AbstractController{
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateIngredientInsights(@RequestBody IngredientInsight ingredientInsight, @PathVariable Long id) {
-        boolean isUpdated = ingredientInsightService.updateIngredientInsight(ingredientInsight, id);
-        if (isUpdated) {
-            return ResponseEntity.ok("Ingredient Insight updated successfully");
+        String message = ingredientInsightService.updateIngredientInsight(ingredientInsight, id);
+        if (message.equals("Ingredient Insight updated successfully")) {
+            return ResponseEntity.status(HttpStatus.OK).body(message);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ingredient Insight does not exist");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
     }
 
     @DeleteMapping("/delete")

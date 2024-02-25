@@ -22,4 +22,17 @@ public class Brand {
     private String description;
     private String country;
     private boolean isCrueltyFree;
+
+    public void updateFrom(Brand brand) {
+        if (brand.getName() != null) {
+            this.setName(brand.getName());
+        }
+        if (brand.getDescription() != null) {
+            this.setDescription(brand.getDescription());
+        }
+        if (brand.getCountry() != null) {
+            this.setCountry(brand.getCountry());
+        }
+        this.setCrueltyFree(brand.isCrueltyFree());
+    }
 }

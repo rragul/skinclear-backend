@@ -65,17 +65,26 @@ public class IngredientInsightService {
     }
 
     @Transactional
-    public boolean updateIngredientInsight(IngredientInsight ingredientInsight, Long id) {
+    public String updateIngredientInsight(IngredientInsight ingredientInsight, Long id) {
         Optional<IngredientInsight> existingInsightOptional = ingredientInsightRepository.findById(id);
 
         if (existingInsightOptional.isPresent()) {
             IngredientInsight existingInsight = existingInsightOptional.get();
-            existingInsight.updateFrom(ingredientInsight);
-            return true;
-        }
 
-        return false;
+            String updatedName = ingredientInsight.getName();
+            if (updatedName != null && !updatedName.equals(existingInsight.getName())) {
+                Optional<IngredientInsight> existingInsightByName = ingredientInsightRepository.findByName(updatedName);
+                if (existingInsightByName.isPresent()) {
+                    return "Ingredient Insight already exists";
+                }
+            }
+
+            existingInsight.updateFrom(ingredientInsight);
+            return "Ingredient Insight updated successfully";
+        }
+        return "Ingredient Insight does not exist";
     }
+
 
     public boolean deleteIngredientInsight(List<Long> ids) {
         for (Long id : ids) {
