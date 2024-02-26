@@ -52,8 +52,6 @@ public class BrandService {
         return "Brand does not exist";
     }
 
-
-
     public boolean deleteBrand(List<Long> ids) {
         for (Long id : ids) {
             if (!brandRepository.existsById(id)) {

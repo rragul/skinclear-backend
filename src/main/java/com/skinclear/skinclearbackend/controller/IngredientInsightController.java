@@ -2,7 +2,6 @@ package com.skinclear.skinclearbackend.controller;
 
 import com.skinclear.skinclearbackend.entity.IngredientInsight;
 import com.skinclear.skinclearbackend.resource.IconResource;
-import com.skinclear.skinclearbackend.resource.IngredientInsightsResponseResource;
 import com.skinclear.skinclearbackend.service.IngredientInsightService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +22,12 @@ public class IngredientInsightController extends AbstractController{
 
     @GetMapping
     public ResponseEntity<Object> getIngredientInsights(@RequestParam int page ,@RequestParam int size) {
-        IngredientInsightsResponseResource response = ingredientInsightService.getIngredientInsightWithPagination(page,size);
-        return sendSuccessResponse(response);
+        return sendSuccessResponse(ingredientInsightService.getIngredientInsightWithPagination(page, size));
+    }
+
+    @GetMapping("/type/{typeName}")
+    public ResponseEntity<Object> getIngredientInsightsByType(@PathVariable String typeName) {
+        return sendSuccessResponse(ingredientInsightService.getIngredientsByType(typeName));
     }
 
     @GetMapping("/random-images")

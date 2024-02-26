@@ -3,9 +3,7 @@ package com.skinclear.skinclearbackend.service;
 import com.skinclear.skinclearbackend.entity.IngredientInsight;
 import com.skinclear.skinclearbackend.repository.IngredientInsightRepository;
 import com.skinclear.skinclearbackend.resource.IconResource;
-import com.skinclear.skinclearbackend.resource.IngredientInsightsResponseResource;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -25,16 +23,9 @@ public class IngredientInsightService {
     }
 
     //FUNCTION
-    public IngredientInsightsResponseResource getIngredientInsightWithPagination(int page , int size){
-        IngredientInsightsResponseResource response = new IngredientInsightsResponseResource();
-
-        response.setTotalIngredientInsights(ingredientInsightRepository.count());
-
+    public Object getIngredientInsightWithPagination(int page , int size){
         Sort sort = Sort.by(Sort.Direction.ASC, "type", "name");
-        Page<IngredientInsight> ingredientInsightPage = ingredientInsightRepository.findAll(PageRequest.of(page, size,sort));
-        response.setIngredientInsightList(ingredientInsightPage.getContent());
-
-        return response;
+        return ingredientInsightRepository.findAll(PageRequest.of(page, size,sort));
     }
 
     public List<IconResource> getRandomImages(int limit) {
@@ -87,7 +78,6 @@ public class IngredientInsightService {
         return "Ingredient Insight does not exist";
     }
 
-
     public boolean deleteIngredientInsight(List<Long> ids) {
         for (Long id : ids) {
             if(ingredientInsightRepository.findById(id).isEmpty()){
@@ -96,5 +86,9 @@ public class IngredientInsightService {
         }
         ingredientInsightRepository.deleteAll(ingredientInsightRepository.findAllById(ids));
         return true;
+    }
+
+    public List<IngredientInsight> getIngredientsByType(String type) {
+        return ingredientInsightRepository.findByTypeIgnoreCase(type);
     }
 }
