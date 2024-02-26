@@ -4,6 +4,7 @@ import com.skinclear.skinclearbackend.entity.Brand;
 import com.skinclear.skinclearbackend.repository.BrandRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,6 +65,11 @@ public class BrandService {
     }
 
     public Object getAllBrandWithPagination(int page, int size) {
-        return brandRepository.findAll(PageRequest.of(page, size));
+        Sort sort = Sort.by(Sort.Direction.ASC,  "name");
+        return brandRepository.findAll(PageRequest.of(page, size,sort));
+    }
+
+    public List<Brand> searchBrandsByName(String searchKeyword) {
+        return brandRepository.findTop20ByNameContainingIgnoreCase(searchKeyword);
     }
 }

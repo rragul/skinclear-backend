@@ -7,6 +7,7 @@ import com.skinclear.skinclearbackend.resource.IngredientInsightsResponseResourc
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +30,8 @@ public class IngredientInsightService {
 
         response.setTotalIngredientInsights(ingredientInsightRepository.count());
 
-        Page<IngredientInsight> ingredientInsightPage = ingredientInsightRepository.findAll(PageRequest.of(page, size));
+        Sort sort = Sort.by(Sort.Direction.ASC, "type", "name");
+        Page<IngredientInsight> ingredientInsightPage = ingredientInsightRepository.findAll(PageRequest.of(page, size,sort));
         response.setIngredientInsightList(ingredientInsightPage.getContent());
 
         return response;

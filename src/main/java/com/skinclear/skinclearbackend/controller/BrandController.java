@@ -29,6 +29,11 @@ public class BrandController extends AbstractController{
         return sendSuccessResponse(brandService.getBrandById(id));
     }
 
+    @GetMapping("search/{keyword}")
+    public ResponseEntity<Object> getBrandsByKeywords(@PathVariable String keyword) {
+        return sendSuccessResponse(brandService.searchBrandsByName(keyword));
+    }
+
     @PostMapping("/add")
     public ResponseEntity<String> addBrand(@RequestBody Brand brand) {
         boolean isAdded = brandService.addBrand(brand);
