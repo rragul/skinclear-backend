@@ -19,6 +19,11 @@ public class BrandService {
         this.brandRepository = brandRepository;
     }
 
+    public Object getAllBrandWithPagination(int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.ASC,  "name");
+        return brandRepository.findAll(PageRequest.of(page, size,sort));
+    }
+
     public Brand getBrandById(Long id) {
         return brandRepository.findById(id).orElse(null);
     }
@@ -60,11 +65,6 @@ public class BrandService {
         }
         brandRepository.deleteAllById(ids);
         return true;
-    }
-
-    public Object getAllBrandWithPagination(int page, int size) {
-        Sort sort = Sort.by(Sort.Direction.ASC,  "name");
-        return brandRepository.findAll(PageRequest.of(page, size,sort));
     }
 
     public List<Brand> searchBrandsByName(String searchKeyword) {

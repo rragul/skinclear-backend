@@ -48,15 +48,6 @@ public class IngredientInsightService {
         return true;
     }
 
-
-    public List<IngredientInsight> getSelectedIngredientInsight(List<Long> selectedIdList){
-        return ingredientInsightRepository.findIngredientInsightByIds(selectedIdList);
-    }
-
-    public List<String> getSelectedIngredientInsightImages(List<Long> selectedIdList){
-        return ingredientInsightRepository.findIngredientInsightImageByIds(selectedIdList);
-    }
-
     @Transactional
     public String updateIngredientInsight(IngredientInsight ingredientInsight, Long id) {
         Optional<IngredientInsight> existingInsightOptional = ingredientInsightRepository.findById(id);
@@ -92,3 +83,4 @@ public class IngredientInsightService {
         return ingredientInsightRepository.findByTypeIgnoreCase(type);
     }
 }
+

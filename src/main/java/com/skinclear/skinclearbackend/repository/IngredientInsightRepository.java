@@ -15,18 +15,8 @@ import java.util.Optional;
 @Repository
 public interface IngredientInsightRepository extends JpaRepository<IngredientInsight, Long> {
 
-    @Override
-    @NonNull
-    Page<IngredientInsight> findAll(@NonNull Pageable pageable);
-
     @Query(value = "SELECT * FROM ingredient_insight ORDER BY RANDOM() LIMIT ?1", nativeQuery = true)
     List<IngredientInsight> findRandomImages(@Param("limit") int limit);
-
-    @Query(value = "SELECT * FROM ingredient_insight WHERE id IN (:ids)", nativeQuery = true)
-    List<IngredientInsight> findIngredientInsightByIds(@Param("ids") List<Long> ids);
-
-    @Query(value = "SELECT image FROM ingredient_insight WHERE id IN (:ids)", nativeQuery = true)
-    List<String> findIngredientInsightImageByIds(@Param("ids") List<Long> ids);
 
     Optional<IngredientInsight> findByName(@NonNull String name);
 

@@ -12,19 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface IngredientRepository extends JpaRepository<Ingredient, Long>{
+    Optional<Object> findByName(String name);
 
-    @Override
-    @NonNull
-    Page<Ingredient> findAll(@NonNull Pageable pageable);
-
-    @Override
-    @NonNull
-    List<Ingredient> findAll();
-
-    @Override
-    Optional<Ingredient> findById(@NonNull Long id);
-
-    Optional<Ingredient> findByName(@NonNull String name);
-
-    long count();
 }
