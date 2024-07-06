@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long>{
-    Optional<Object> findByName(String name);
-
     List<Brand> findTop20ByNameContainingIgnoreCase(String name);
+
+    Optional<Brand> findByName(String updatedName);
 }

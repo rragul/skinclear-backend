@@ -1,7 +1,10 @@
 package com.skinclear.skinclearbackend.controller;
 
 import com.skinclear.skinclearbackend.entity.Brand;
+import com.skinclear.skinclearbackend.resource.GeneralResponse;
 import com.skinclear.skinclearbackend.service.BrandService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,7 @@ import java.util.List;
 @RequestMapping("/api/v1/brand")
 public class BrandController extends AbstractController{
 
+    private final static Logger logger = LoggerFactory.getLogger(BrandController.class);
     private final BrandService brandService;
 
     public BrandController(BrandService brandService) {
@@ -20,45 +24,82 @@ public class BrandController extends AbstractController{
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAllBrandsWithPagination(@RequestParam int page ,@RequestParam int size) {
-        return sendSuccessResponse(brandService.getAllBrandWithPagination(page,size));
+    public ResponseEntity<GeneralResponse> getAllBrandsWithPagination(@RequestParam int page , @RequestParam int size) {
+        logger.info("request - getAllBrandsWithPagination | (URL: /api/v1/brand) | (Method: GET) | (page: {}) | (size: {})", page, size);
+        Object allBrandWithPagination = brandService.getAllBrandWithPagination(page, size);
+        logger.info("response - getAllBrandsWithPagination | (URL: /api/v1/brand) | (Method: GET) | (status: 200)");
+        return ResponseEntity.ok(
+                GeneralResponse.builder()
+                        .success(true)
+                        .data(allBrandWithPagination)
+                        .build()
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getBrandById(@PathVariable Long id) {
-        return sendSuccessResponse(brandService.getBrandById(id));
+    public ResponseEntity<GeneralResponse> getBrandById(@PathVariable Long id) {
+        logger.info("request - getBrandById | (URL: /api/v1/brand/{brandId}) | (Method: GET) | (brandId: {})", id);
+        Brand brand = brandService.getBrandById(id);
+        logger.info("response - getBrandById | (URL: /api/v1/brand/{brandId}) | (Method: GET) | (status: 200)");
+        return ResponseEntity.ok(
+                GeneralResponse.builder()
+                        .success(true)
+                        .data(brand)
+                        .build()
+        );
+
     }
 
     @GetMapping("search/{keyword}")
-    public ResponseEntity<Object> getBrandsByKeywords(@PathVariable String keyword) {
-        return sendSuccessResponse(brandService.searchBrandsByName(keyword));
+    public ResponseEntity<GeneralResponse> getBrandsByKeywords(@PathVariable String keyword) {
+        logger.info("request - getBrandsByKeywords | (URL: /api/v1/brand/search/{keyword}) | (Method: GET) | (keyword: {})", keyword);
+        List<Brand> brands = brandService.searchBrandsByName(keyword);
+        logger.info("response - getBrandsByKeywords | (URL: /api/v1/brand/search/{keyword}) | (Method: GET) | (status: 200)");
+        return ResponseEntity.ok(
+                GeneralResponse.builder()
+                        .success(true)
+                        .data(brands)
+                        .build()
+        );
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addBrand(@RequestBody Brand brand) {
-        boolean isAdded = brandService.addBrand(brand);
-        if (isAdded) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Brand added successfully");
-        }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("Brand already exists");
+    public ResponseEntity<GeneralResponse> addBrand(@RequestBody Brand brand) {
+        logger.info("request - addBrand | (URL: /api/v1/brand/add) | (Method: POST) | (brand: {})", brand);
+        brandService.addBrand(brand);
+        logger.info("response - addBrand | (URL: /api/v1/brand/add) | (Method: POST) | (status: 201)");
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .message("Brand added successfully")
+                            .build()
+            );
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateBrand(@RequestBody Brand brand, @PathVariable Long id) {
-        String message = brandService.updateBrand(brand, id);
-        if (message.equals("Brand updated successfully")) {
-            return ResponseEntity.status(HttpStatus.OK).body(message);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+    public ResponseEntity<GeneralResponse> updateBrand(@RequestBody Brand brand, @PathVariable Long id) {
+        logger.info("request - updateBrand | (URL: /api/v1/brand/update/{brandId}) | (Method: PUT) | (brand: {}) | (brandId: {})", brand, id);
+        brandService.updateBrand(brand, id);
+        logger.info("response - updateBrand | (URL: /api/v1/brand/update/{brandId}) | (Method: PUT) | (status: 200)");
+        return ResponseEntity.ok(
+                GeneralResponse.builder()
+                        .success(true)
+                        .message("Brand updated successfully")
+                        .build()
+        );
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Object> deleteBrand(@RequestBody List<Long> ids) {
-        boolean isDeleted = brandService.deleteBrand(ids);
-        if (isDeleted) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Brand does not exist");
+    public ResponseEntity<GeneralResponse> deleteBrand(@RequestBody List<Long> ids) {
+        logger.info("request - deleteBrand | (URL: /api/v1/brand/delete) | (Method: DELETE) | (ids: {})", ids);
+        brandService.deleteBrand(ids);
+        logger.info("response - deleteBrand | (URL: /api/v1/brand/delete) | (Method: DELETE) | (status: 200)");
+        return ResponseEntity.ok(
+                GeneralResponse.builder()
+                        .success(true)
+                        .message("Brand deleted successfully")
+                        .build()
+        );
     }
 
 }

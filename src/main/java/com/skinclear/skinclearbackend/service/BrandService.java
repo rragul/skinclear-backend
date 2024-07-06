@@ -25,46 +25,49 @@ public class BrandService {
     }
 
     public Brand getBrandById(Long id) {
-        return brandRepository.findById(id).orElse(null);
+        return brandRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Brand does not exist")
+        );
     }
 
-    public boolean addBrand(Brand brand) {
-        if (brandRepository.findByName(brand.getName()).isPresent()) {
-            return false;
-        }
+    public void addBrand(Brand brand) {
+        brandRepository.findByName(brand.getName()).ifPresent(
+                (existingBrand) -> {
+                    throw new RuntimeException("Brand already exists");
+                }
+        );
         brandRepository.save(brand);
-        return true;
     }
 
     @Transactional
-    public String updateBrand(Brand brand, Long id) {
-        Optional<Brand> existingBrandOptional = brandRepository.findById(id);
+    public void updateBrand(Brand brand, Long id) {
+        Brand existingBrand = brandRepository.findById(id).
+                orElseThrow(() -> new RuntimeException("Brand does not exist"));
 
-        if (existingBrandOptional.isPresent()) {
-            Brand existingBrand = existingBrandOptional.get();
-
-            String updatedName = brand.getName();
-            if (updatedName != null && !updatedName.equals(existingBrand.getName())) {
-                Optional<Object> existingBrandByName = brandRepository.findByName(updatedName);
-                if (existingBrandByName.isPresent()) {
-                    return "Brand already exists";
-                }
-            }
-
-            existingBrand.updateFrom(brand);
-            return "Brand updated successfully";
+        String updatedName = brand.getName();
+        if (updatedName != null && !updatedName.equals(existingBrand.getName())) {
+            brandRepository.findByName(updatedName).ifPresent(
+                    (existingBrandWithUpdatedName) -> {
+                        throw new RuntimeException("Brand with updated name already exists");
+                    }
+            );
         }
-        return "Brand does not exist";
+        Brand updatedBrand = new Brand();
+        updatedBrand.setId(id);
+        updatedBrand.setName(brand.getName());
+        updatedBrand.setDescription(brand.getDescription());
+        updatedBrand.setCountry(brand.getCountry());
+        updatedBrand.setCrueltyFree(brand.isCrueltyFree());
+        brandRepository.save(updatedBrand);
     }
 
-    public boolean deleteBrand(List<Long> ids) {
+    public void deleteBrand(List<Long> ids) {
         for (Long id : ids) {
             if (!brandRepository.existsById(id)) {
-                return false;
+                throw new RuntimeException("Brand does not exist");
             }
         }
         brandRepository.deleteAllById(ids);
-        return true;
     }
 
     public List<Brand> searchBrandsByName(String searchKeyword) {
