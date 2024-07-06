@@ -71,6 +71,9 @@ public class BrandService {
     }
 
     public List<Brand> searchBrandsByName(String searchKeyword) {
+        if (searchKeyword == null || searchKeyword.isEmpty()) {
+            return brandRepository.findFirst10();
+        }
         return brandRepository.findTop10ByNameStartingWithIgnoreCase(searchKeyword);
     }
 }

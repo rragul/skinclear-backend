@@ -91,6 +91,9 @@ public class IngredientService {
     }
 
     public List<Ingredient> searchIngredientsByName(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return ingredientRepository.findFirst10();
+        }
         return ingredientRepository.findTop10ByNameStartingWithIgnoreCase(keyword);
     }
 }

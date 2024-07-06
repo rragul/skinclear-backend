@@ -65,27 +65,4 @@ public class Ingredient {
         this.whatItIs = whatItIs;
     }
 
-    public void updateFrom(Ingredient ingredient) {
-        if (ingredient.getName() != null) {
-            this.setName(ingredient.getName());
-        }
-        if (ingredient.getWhatItDoes() != null) {
-            this.setWhatItDoes(ingredient.getWhatItDoes());
-        }
-        if (ingredient.getOtherNames() != null) {
-            this.setOtherNames(ingredient.getOtherNames());
-        }
-        if (ingredient.getRarity() != null) {
-            this.setRarity(ingredient.getRarity());
-        }
-        if (ingredient.getLikeCount() != null) {
-            this.setLikeCount(ingredient.getLikeCount());
-        }
-        if (ingredient.getDislikeCount() != null) {
-            this.setDislikeCount(ingredient.getDislikeCount());
-        }
-        if (ingredient.getExplain() != null) {
-            this.setExplain(ingredient.getExplain());
-        }
-    }
 }

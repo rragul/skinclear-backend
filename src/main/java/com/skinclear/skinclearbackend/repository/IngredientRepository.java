@@ -14,7 +14,6 @@ import java.util.Optional;
 @Repository
 public interface IngredientRepository extends JpaRepository<Ingredient, Long>{
     Optional<Object> findByName(@NonNull String name);
-
     List<Ingredient> findTop10ByNameStartingWithIgnoreCase(String keyword);
-
+    List<Ingredient> findFirst10();
 }
