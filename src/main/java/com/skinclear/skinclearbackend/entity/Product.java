@@ -1,5 +1,6 @@
 package com.skinclear.skinclearbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,13 +21,32 @@ public class Product {
     private Long id;
     private String name;
     private String type;
-    //private Brand brand;
     private int like;
     private int dislike;
     private String WhatItIs;
     private int spfRating;
     private boolean vegan;
-   // private List<Ingredient> ingredients;
+    private String category;
+    private String subcategory;
+    private boolean alcoholFree;
+    private boolean fragranceFree;
+    private boolean siliconeFree;
+    private boolean sulfateFree;
+    private boolean parabenFree;
+    private boolean oilFree;
+    private boolean fungalAcneSafe;
+    private boolean euAllergenFree;
+    private boolean reefSafe;
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
 
-
+    @JsonManagedReference
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "product_and_ingredient",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
+    private List<Ingredient> ingredients;
 }

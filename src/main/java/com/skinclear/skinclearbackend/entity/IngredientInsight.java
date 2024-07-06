@@ -38,4 +38,12 @@ public class IngredientInsight {
     @JsonBackReference
     @ManyToMany(mappedBy = "concern")
     private Set<Ingredient> concernIngredients;
+
+    public IngredientInsight(String name, String type, String image, String shortDescription, String description) {
+        this.name = name;
+        this.type = type;
+        this.image = image;
+        this.shortDescription = shortDescription;
+        this.description = description;
+    }
 }

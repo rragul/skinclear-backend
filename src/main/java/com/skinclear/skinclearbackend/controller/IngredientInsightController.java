@@ -1,8 +1,10 @@
 package com.skinclear.skinclearbackend.controller;
 
 import com.skinclear.skinclearbackend.entity.IngredientInsight;
+import com.skinclear.skinclearbackend.resource.Error;
 import com.skinclear.skinclearbackend.resource.GeneralResponse;
 import com.skinclear.skinclearbackend.resource.IconResource;
+import com.skinclear.skinclearbackend.dto.IngredientInsightDTO;
 import com.skinclear.skinclearbackend.service.IngredientInsightService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,16 +67,30 @@ public class IngredientInsightController extends AbstractController{
     }
 
     @PostMapping("/add")
-    public ResponseEntity<GeneralResponse> addIngredientInsights(@RequestBody IngredientInsight ingredientInsight) {
-        logger.info("request - addIngredientInsights | (URL: /api/v1/ingredient-insight/add) | (Method: POST)");
-        ingredientInsightService.addIngredientInsight(ingredientInsight);
-        logger.info("response - addIngredientInsights | (URL: /api/v1/ingredient-insight/add) | (Method: POST)");
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                GeneralResponse.builder()
-                        .success(true)
-                        .message("Ingredient Insight added successfully")
-                        .build()
-        );
+    public ResponseEntity<GeneralResponse> addIngredientInsights(@RequestBody IngredientInsightDTO ingredientInsight) {
+        try {
+            logger.info("request - addIngredientInsights | (URL: /api/v1/ingredient-insight/add) | (Method: POST)");
+            ingredientInsightService.addIngredientInsight(ingredientInsight);
+            logger.info("response - addIngredientInsights | (URL: /api/v1/ingredient-insight/add) | (Method: POST)");
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .message("Ingredient Insight added successfully")
+                            .build()
+            );
+        }
+        catch (Exception e) {
+            logger.error("Error adding ingredient insight", e);
+            return ResponseEntity.badRequest().body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error adding ingredient insight")
+                            .error(Error.builder().message(e.getMessage()).build())
+                            .errorType(e.getClass().getName())
+                            .build()
+            );
+        }
+
     }
 
     @PutMapping("/update/{id}")

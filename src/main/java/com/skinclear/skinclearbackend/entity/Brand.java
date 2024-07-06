@@ -1,5 +1,6 @@
 package com.skinclear.skinclearbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,4 +22,7 @@ public class Brand {
     private String description;
     private String country;
     private boolean isCrueltyFree;
+    @JsonBackReference
+    @OneToMany(mappedBy = "brand")
+    private List<Product> products;
 }

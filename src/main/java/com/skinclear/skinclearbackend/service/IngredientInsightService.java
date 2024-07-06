@@ -1,5 +1,6 @@
 package com.skinclear.skinclearbackend.service;
 
+import com.skinclear.skinclearbackend.dto.IngredientInsightDTO;
 import com.skinclear.skinclearbackend.entity.IngredientInsight;
 import com.skinclear.skinclearbackend.repository.IngredientInsightRepository;
 import com.skinclear.skinclearbackend.resource.IconResource;
@@ -42,17 +43,23 @@ public class IngredientInsightService {
         return iconResources;
     }
 
-    public void addIngredientInsight(IngredientInsight ingredientInsight){
+    public void addIngredientInsight(IngredientInsightDTO ingredientInsight){
         ingredientInsightRepository.findByName(ingredientInsight.getName()).ifPresent(existingInsight -> {
-            throw new IllegalStateException("Ingredient Insight already exists");
+            throw new RuntimeException("Ingredient Insight already exists");
         });
-        ingredientInsightRepository.save(ingredientInsight);
+        ingredientInsightRepository.save(new IngredientInsight(
+                ingredientInsight.getName(),
+                ingredientInsight.getType(),
+                ingredientInsight.getImage(),
+                ingredientInsight.getShortDescription(),
+                ingredientInsight.getDescription()
+        ));
     }
 
     @Transactional
     public void updateIngredientInsight(IngredientInsight ingredientInsight, Long id) {
         IngredientInsight existingInsight = ingredientInsightRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Ingredient Insight does not exist"));
+                .orElseThrow(() -> new RuntimeException("Ingredient Insight does not exist"));
 
         String updatedName = ingredientInsight.getName();
         if (updatedName != null && !updatedName.equals(existingInsight.getName())) {
