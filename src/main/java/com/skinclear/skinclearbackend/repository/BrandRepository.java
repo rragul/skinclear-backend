@@ -11,7 +11,6 @@ import java.util.Optional;
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long>{
     Optional<Brand> findByName(String updatedName);
+    List<Brand> findTop10ByNameStartingWithIgnoreCase(String searchKeyword);
 
-    @Query("SELECT b FROM Brand b WHERE lower(b.name) LIKE lower(concat(?1, '%')) LIMIT 10")
-    List<Brand> findBrandsByName(String searchKeyword);
 }

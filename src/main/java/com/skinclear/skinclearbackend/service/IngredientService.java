@@ -91,7 +91,7 @@ public class IngredientService {
     }
 
     public List<Ingredient> searchIngredientsByName(String keyword) {
-        return ingredientRepository.findIngredientsByName(keyword);
+        return ingredientRepository.findTop10ByNameStartingWithIgnoreCase(keyword);
     }
 }
 
