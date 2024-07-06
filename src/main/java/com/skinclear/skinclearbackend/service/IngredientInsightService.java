@@ -8,8 +8,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class IngredientInsightService {
@@ -81,6 +83,10 @@ public class IngredientInsightService {
 
     public List<IngredientInsight> getIngredientsByType(String type) {
         return ingredientInsightRepository.findByTypeIgnoreCase(type);
+    }
+
+    public Set<IngredientInsight> getIngredientsByIds(List<Long> ids){
+        return new HashSet<>(ingredientInsightRepository.findAllById(ids));
     }
 }
 

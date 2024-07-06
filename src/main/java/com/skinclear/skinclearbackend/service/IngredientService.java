@@ -1,6 +1,8 @@
 package com.skinclear.skinclearbackend.service;
 
+import com.skinclear.skinclearbackend.dto.IngredientDTO;
 import com.skinclear.skinclearbackend.entity.Ingredient;
+import com.skinclear.skinclearbackend.entity.IngredientInsight;
 import com.skinclear.skinclearbackend.repository.IngredientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
@@ -8,19 +10,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
+    private  final  IngredientInsightService ingredientInsightService;
 
     public IngredientService
-            (IngredientRepository ingredientRepository)
+            (IngredientRepository ingredientRepository, IngredientInsightService ingredientInsightService)
     {
         this.ingredientRepository = ingredientRepository;
+        this.ingredientInsightService = ingredientInsightService;
     }
 
     public Object getAllIngredientWithPagination(int page, int size) {
@@ -32,14 +34,16 @@ public class IngredientService {
         return ingredientRepository.findById(id).orElse(null);
     }
 
-    public boolean addBrand(Ingredient ingredient) {
-        if (ingredientRepository.findByName(ingredient.getName()).isPresent()) {
+    public boolean addIngredient(IngredientDTO ingredientDTO) {
+        if (ingredientRepository.findByName(ingredientDTO.getName()).isPresent()) {
             return false;
         }
-        ingredientRepository.save(ingredient);
+
+        ingredientRepository.save(createNewIngredientFromIngredientDTO(ingredientDTO));
         return true;
     }
-    public boolean deleteBrand(List<Long> ids) {
+
+    public boolean deleteIngredient(List<Long> ids) {
         for (Long id : ids) {
             if (!ingredientRepository.existsById(id)) {
                 return false;
@@ -50,24 +54,50 @@ public class IngredientService {
     }
 
     @Transactional
-    public String updateBrand(Ingredient ingredient, Long id) {
+    public String updateIngredient(IngredientDTO ingredientDTO, Long id) {
         Optional<Ingredient> existingIngredientOptional = ingredientRepository.findById(id);
 
         if (existingIngredientOptional.isPresent()) {
             Ingredient existingIngredient = existingIngredientOptional.get();
 
-            String updatedName = ingredient.getName();
+            String updatedName = ingredientDTO.getName();
             if (updatedName != null && !updatedName.equals(existingIngredient.getName())) {
                 Optional<Object> existingIngredientByName = ingredientRepository.findByName(updatedName);
                 if (existingIngredientByName.isPresent()) {
                     return "Ingredient already exists";
                 }
             }
-
-            existingIngredient.updateFrom(ingredient);
+            Ingredient ingredient = createNewIngredientFromIngredientDTO(ingredientDTO);
+            ingredient.setId(id);
+            ingredientRepository.save(ingredient);
+           // existingIngredient.updateFrom(createNewIngredientFromIngredientDTO(ingredientDTO));
             return "Ingredient updated successfully";
         }
         return "Ingredient does not exist";
+    }
+
+    private  Ingredient createNewIngredientFromIngredientDTO(IngredientDTO ingredientDTO){
+        List<Long> whatItIsIds = Arrays.stream(ingredientDTO.getWhatItIsIDs()).toList();
+        List<Long> benefitIds = Arrays.stream(ingredientDTO.getBenefitsIDs()).toList();
+        List<Long> concernIds = Arrays.stream(ingredientDTO.getConcernIDs()).toList();
+
+        Set<IngredientInsight> whatItIsIngredientInsight = ingredientInsightService.getIngredientsByIds(whatItIsIds);
+        Set<IngredientInsight> benefitIngredientInsight = ingredientInsightService.getIngredientsByIds(benefitIds);
+        Set<IngredientInsight> concernIngredientInsight = ingredientInsightService.getIngredientsByIds(concernIds);
+
+        return new Ingredient(
+                ingredientDTO.getName(),
+                ingredientDTO.getWhatItDoes(),
+                benefitIngredientInsight,
+                ingredientDTO.getOtherNames(),
+                concernIngredientInsight,
+                ingredientDTO.getRarity(),
+                ingredientDTO.getLikeCount(),
+                ingredientDTO.getDislikeCount(),
+                ingredientDTO.getExplain(),
+                whatItIsIngredientInsight
+        );
+
     }
 }
 

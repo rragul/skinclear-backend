@@ -12,6 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface IngredientRepository extends JpaRepository<Ingredient, Long>{
-    Optional<Object> findByName(String name);
+    Optional<Object> findByName(@NonNull String name);
 
 }

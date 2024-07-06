@@ -1,5 +1,6 @@
 package com.skinclear.skinclearbackend.controller;
 
+import com.skinclear.skinclearbackend.dto.IngredientDTO;
 import com.skinclear.skinclearbackend.entity.Ingredient;
 import com.skinclear.skinclearbackend.service.IngredientService;
 import org.springframework.http.HttpStatus;
@@ -25,13 +26,13 @@ public class IngredientController extends AbstractController{
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getBrandById(@PathVariable Long id) {
+    public ResponseEntity<Object> getIngredientById(@PathVariable Long id) {
         return sendSuccessResponse(ingredientService.getIngredientById(id));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addIngredient(@RequestBody Ingredient ingredient) {
-        boolean isAdded = ingredientService.addBrand(ingredient);
+    public ResponseEntity<String> addIngredient(@RequestBody IngredientDTO ingredient) {
+        boolean isAdded = ingredientService.addIngredient(ingredient);
         if (isAdded) {
             return ResponseEntity.status(HttpStatus.CREATED).body("Ingredient added successfully");
         }
@@ -40,7 +41,7 @@ public class IngredientController extends AbstractController{
 
     @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteBrand(@RequestBody List<Long> ids) {
-        boolean isDeleted = ingredientService.deleteBrand(ids);
+        boolean isDeleted = ingredientService.deleteIngredient(ids);
         if (isDeleted) {
             return ResponseEntity.noContent().build();
         }
@@ -48,8 +49,8 @@ public class IngredientController extends AbstractController{
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateBrand(@RequestBody Ingredient ingredient, @PathVariable Long id) {
-        String message = ingredientService.updateBrand(ingredient, id);
+    public ResponseEntity<String> updateBrand(@RequestBody IngredientDTO ingredient, @PathVariable Long id) {
+        String message = ingredientService.updateIngredient(ingredient, id);
         if (message.equals("Ingredient updated successfully")) {
             return ResponseEntity.status(HttpStatus.OK).body(message);
         }
