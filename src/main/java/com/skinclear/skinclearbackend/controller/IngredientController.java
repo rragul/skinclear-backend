@@ -90,4 +90,17 @@ public class IngredientController extends AbstractController{
                         .build()
         );
     }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<GeneralResponse> getIngredientsByKeywords(@PathVariable String keyword) {
+        logger.info("request - getIngredientsByKeywords | (URL: /api/v1/ingredient/search/{keyword}) | (Method: GET) | (keyword: {})", keyword);
+        List<Ingredient> ingredients = ingredientService.searchIngredientsByName(keyword);
+        logger.info("response - getIngredientsByKeywords | (URL: /api/v1/ingredient/search/{keyword}) | (Method: GET) | (status: 200)");
+        return ResponseEntity.ok(
+                GeneralResponse.builder()
+                        .success(true)
+                        .data(ingredients)
+                        .build()
+        );
+    }
 }

@@ -89,6 +89,10 @@ public class IngredientService {
         );
 
     }
+
+    public List<Ingredient> searchIngredientsByName(String keyword) {
+        return ingredientRepository.findIngredientsByName(keyword);
+    }
 }
 
 

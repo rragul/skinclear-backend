@@ -71,6 +71,6 @@ public class BrandService {
     }
 
     public List<Brand> searchBrandsByName(String searchKeyword) {
-        return brandRepository.findTop20ByNameContainingIgnoreCase(searchKeyword);
+        return brandRepository.findBrandsByName(searchKeyword);
     }
 }
