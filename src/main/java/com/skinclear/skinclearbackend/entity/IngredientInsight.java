@@ -38,22 +38,4 @@ public class IngredientInsight {
     @JsonBackReference
     @ManyToMany(mappedBy = "concern")
     private Set<Ingredient> concernIngredients;
-
-    public void updateFrom(IngredientInsight updatedInsight) {
-        if (updatedInsight.getName() != null) {
-            this.setName(updatedInsight.getName());
-        }
-        if (updatedInsight.getDescription() != null) {
-            this.setDescription(updatedInsight.getDescription());
-        }
-        if (updatedInsight.getShortDescription() != null) {
-            this.setShortDescription(updatedInsight.getShortDescription());
-        }
-        if (updatedInsight.getType() != null) {
-            this.setType(updatedInsight.getType());
-        }
-        if (updatedInsight.getImage() != null) {
-            this.setImage(updatedInsight.getImage());
-        }
-    }
 }

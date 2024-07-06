@@ -1,8 +1,11 @@
 package com.skinclear.skinclearbackend.controller;
 
 import com.skinclear.skinclearbackend.entity.IngredientInsight;
+import com.skinclear.skinclearbackend.resource.GeneralResponse;
 import com.skinclear.skinclearbackend.resource.IconResource;
 import com.skinclear.skinclearbackend.service.IngredientInsightService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +17,8 @@ import java.util.List;
 @RequestMapping("/api/v1/ingredient-insight")
 public class IngredientInsightController extends AbstractController{
 
+    private static final Logger logger = LoggerFactory.getLogger(IngredientInsightController.class);
+
     private final IngredientInsightService ingredientInsightService;
 
     public IngredientInsightController(IngredientInsightService ingredientInsightService) {
@@ -21,46 +26,81 @@ public class IngredientInsightController extends AbstractController{
     }
 
     @GetMapping
-    public ResponseEntity<Object> getIngredientInsights(@RequestParam int page ,@RequestParam int size) {
-        return sendSuccessResponse(ingredientInsightService.getIngredientInsightWithPagination(page, size));
+    public ResponseEntity<GeneralResponse> getIngredientInsights(@RequestParam int page , @RequestParam int size) {
+        logger.info("request - getIngredientInsights | (URL: /api/v1/ingredient-insight) | (Method: GET) | (page: {}) | (size: {})", page, size);
+        ingredientInsightService.getIngredientInsightWithPagination(page, size);
+        logger.info("response - getIngredientInsights | (URL: /api/v1/ingredient-insight) | (Method: GET) | (page: {}) | (size: {})", page, size);
+        return ResponseEntity.ok().body(
+                GeneralResponse.builder()
+                        .success(true)
+                        .data(ingredientInsightService.getIngredientInsightWithPagination(page, size))
+                        .build()
+        );
     }
 
     @GetMapping("/type/{typeName}")
-    public ResponseEntity<Object> getIngredientInsightsByType(@PathVariable String typeName) {
-        return sendSuccessResponse(ingredientInsightService.getIngredientsByType(typeName));
+    public ResponseEntity<GeneralResponse> getIngredientInsightsByType(@PathVariable String typeName) {
+        logger.info("request - getIngredientInsightsByType | (URL: /api/v1/ingredient-insight/type/{}) | (Method: GET)", typeName);
+        List<IngredientInsight> ingredientInsights = ingredientInsightService.getIngredientsByType(typeName);
+        logger.info("response - getIngredientInsightsByType | (URL: /api/v1/ingredient-insight/type/{}) | (Method: GET)", typeName);
+        return ResponseEntity.ok().body(
+                GeneralResponse.builder()
+                        .success(true)
+                        .data(ingredientInsights)
+                        .build()
+        );
     }
 
     @GetMapping("/random-images")
-    public ResponseEntity<Object> getRandomImages(@RequestParam(value = "limit", defaultValue = "28") int limit) {
-       List<IconResource> icons = ingredientInsightService.getRandomImages(limit);
-       return sendSuccessResponse(icons);
+    public ResponseEntity<GeneralResponse> getRandomImages(@RequestParam(value = "limit", defaultValue = "28") int limit) {
+        logger.info("request - getRandomImages | (URL: /api/v1/ingredient-insight/random-images) | (Method: GET) | (limit: {})", limit);
+        List<IconResource> iconResources = ingredientInsightService.getRandomImages(limit);
+        logger.info("response - getRandomImages | (URL: /api/v1/ingredient-insight/random-images) | (Method: GET) | (limit: {})", limit);
+        return ResponseEntity.ok().body(
+                GeneralResponse.builder()
+                        .success(true)
+                        .data(iconResources)
+                        .build()
+        );
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addIngredientInsights(@RequestBody IngredientInsight ingredientInsight) {
-        boolean isAdded = ingredientInsightService.addIngredientInsight(ingredientInsight);
-        if (isAdded) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Ingredient Insight added successfully");
-        }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("Ingredient Insight already exists");
+    public ResponseEntity<GeneralResponse> addIngredientInsights(@RequestBody IngredientInsight ingredientInsight) {
+        logger.info("request - addIngredientInsights | (URL: /api/v1/ingredient-insight/add) | (Method: POST)");
+        ingredientInsightService.addIngredientInsight(ingredientInsight);
+        logger.info("response - addIngredientInsights | (URL: /api/v1/ingredient-insight/add) | (Method: POST)");
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                GeneralResponse.builder()
+                        .success(true)
+                        .message("Ingredient Insight added successfully")
+                        .build()
+        );
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateIngredientInsights(@RequestBody IngredientInsight ingredientInsight, @PathVariable Long id) {
-        String message = ingredientInsightService.updateIngredientInsight(ingredientInsight, id);
-        if (message.equals("Ingredient Insight updated successfully")) {
-            return ResponseEntity.status(HttpStatus.OK).body(message);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+    public ResponseEntity<GeneralResponse> updateIngredientInsights(@RequestBody IngredientInsight ingredientInsight, @PathVariable Long id) {
+        logger.info("request - updateIngredientInsights | (URL: /api/v1/ingredient-insight/update/{}) | (Method: PUT)", id);
+        ingredientInsightService.updateIngredientInsight(ingredientInsight, id);
+        logger.info("response - updateIngredientInsights | (URL: /api/v1/ingredient-insight/update/{}) | (Method: PUT)", id);
+        return ResponseEntity.ok().body(
+                GeneralResponse.builder()
+                        .success(true)
+                        .message("Ingredient Insight updated successfully")
+                        .build()
+        );
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Object> deleteIngredientInsights(@RequestBody List<Long> ids) {
-        boolean isDeleted = ingredientInsightService.deleteIngredientInsight(ids);
-        if (isDeleted) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ingredient Insight does not exist");
+    public ResponseEntity<GeneralResponse> deleteIngredientInsights(@RequestBody List<Long> ids) {
+        logger.info("request - deleteIngredientInsights | (URL: /api/v1/ingredient-insight/delete) | (Method: DELETE)");
+        ingredientInsightService.deleteIngredientInsight(ids);
+        logger.info("response - deleteIngredientInsights | (URL: /api/v1/ingredient-insight/delete) | (Method: DELETE)");
+        return ResponseEntity.ok().body(
+                GeneralResponse.builder()
+                        .success(true)
+                        .message("Ingredient Insight deleted successfully")
+                        .build()
+        );
     }
 
 }
