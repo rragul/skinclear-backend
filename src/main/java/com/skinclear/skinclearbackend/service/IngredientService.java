@@ -31,49 +31,39 @@ public class IngredientService {
     }
 
     public Ingredient getIngredientById(Long id) {
-        return ingredientRepository.findById(id).orElse(null);
+        return ingredientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found for id: " + id));
     }
 
-    public boolean addIngredient(IngredientDTO ingredientDTO) {
-        if (ingredientRepository.findByName(ingredientDTO.getName()).isPresent()) {
-            return false;
-        }
-
-        ingredientRepository.save(createNewIngredientFromIngredientDTO(ingredientDTO));
-        return true;
+    public void addIngredient(IngredientDTO ingredientDTO) {
+        String name = ingredientDTO.getName();
+        ingredientRepository.findByName(name)
+                .ifPresent(ingredient -> {
+                    throw new RuntimeException("Ingredient with name: " + name + " already exists");
+                });
+        Ingredient ingredient = createNewIngredientFromIngredientDTO(ingredientDTO);
+        ingredientRepository.save(ingredient);
     }
 
-    public boolean deleteIngredient(List<Long> ids) {
-        for (Long id : ids) {
-            if (!ingredientRepository.existsById(id)) {
-                return false;
-            }
-        }
+    public void deleteIngredient(List<Long> ids) {
         ingredientRepository.deleteAllById(ids);
-        return true;
     }
 
     @Transactional
-    public String updateIngredient(IngredientDTO ingredientDTO, Long id) {
-        Optional<Ingredient> existingIngredientOptional = ingredientRepository.findById(id);
+    public void updateIngredient(IngredientDTO ingredientDTO, Long id) {
+        Ingredient existingIngredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found for id: " + id));
 
-        if (existingIngredientOptional.isPresent()) {
-            Ingredient existingIngredient = existingIngredientOptional.get();
-
-            String updatedName = ingredientDTO.getName();
-            if (updatedName != null && !updatedName.equals(existingIngredient.getName())) {
-                Optional<Object> existingIngredientByName = ingredientRepository.findByName(updatedName);
-                if (existingIngredientByName.isPresent()) {
-                    return "Ingredient already exists";
-                }
-            }
-            Ingredient ingredient = createNewIngredientFromIngredientDTO(ingredientDTO);
-            ingredient.setId(id);
-            ingredientRepository.save(ingredient);
-           // existingIngredient.updateFrom(createNewIngredientFromIngredientDTO(ingredientDTO));
-            return "Ingredient updated successfully";
+        String updatedName = ingredientDTO.getName();
+        if (updatedName != null && !updatedName.equals(existingIngredient.getName())) {
+            ingredientRepository.findByName(updatedName)
+                    .ifPresent(ingredient -> {
+                        throw new RuntimeException("Ingredient with name: " + updatedName + " already exists");
+                    });
         }
-        return "Ingredient does not exist";
+        Ingredient ingredient = createNewIngredientFromIngredientDTO(ingredientDTO);
+        ingredient.setId(id);
+        ingredientRepository.save(ingredient);
     }
 
     private  Ingredient createNewIngredientFromIngredientDTO(IngredientDTO ingredientDTO){
