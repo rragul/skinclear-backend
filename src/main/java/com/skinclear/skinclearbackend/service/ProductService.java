@@ -72,8 +72,8 @@ public class ProductService {
 
         product.setName(productDTO.getName());
         product.setType(productDTO.getType());
-        product.setLike(productDTO.getLike());
-        product.setDislike(productDTO.getDislike());
+        product.setLikeCount(productDTO.getLikeCount());
+        product.setDislikeCount(productDTO.getDislikeCount());
         product.setWhatItIs(productDTO.getWhatItIs());
         product.setSpfRating(productDTO.getSpfRating());
         product.setVegan(productDTO.isVegan());
@@ -138,5 +138,11 @@ public class ProductService {
 
     public void deleteProduct(List<Long> ids) {
         productRepository.deleteAllById(ids);
+    }
+
+    public List<Product> getRecommendation(String ingredientName) {
+        Ingredient ingredient = ingredientService.getIngredientByName(ingredientName);
+        return productRepository.findProductByIngredients(ingredient);
+
     }
 }

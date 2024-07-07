@@ -100,6 +100,11 @@ public class IngredientService {
     public List<Ingredient> getIngredientsByIds(List<Long> ingredientIds) {
         return ingredientRepository.findAllById(ingredientIds);
     }
+
+    public Ingredient getIngredientByName(String ingredientName) {
+        return ingredientRepository.findByName(ingredientName)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found with name: " + ingredientName));
+    }
 }
 
 
