@@ -142,8 +142,8 @@ public class ProductService {
         productRepository.deleteAllById(ids);
     }
 
-    public List<Product> getRecommendation(String ingredientName) {
-        Ingredient ingredient = ingredientService.getIngredientByName(ingredientName);
+    public List<Product> getRecommendation(Long ingredientId) {
+        Ingredient ingredient = ingredientService.getIngredientById(ingredientId);
         return productRepository.findProductByIngredients(ingredient);
 
     }

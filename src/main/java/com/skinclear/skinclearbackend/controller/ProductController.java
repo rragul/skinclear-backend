@@ -126,9 +126,9 @@ public class ProductController extends AbstractController {
     }
 
     @GetMapping("/recommendation")
-    public ResponseEntity<GeneralResponse> getRecommendation(@RequestParam String ingredientName){
+    public ResponseEntity<GeneralResponse> getRecommendation(@RequestParam Long ingredientId){
         logger.info("request - getRecommendation | (URL: /api/v1/product/recommendation) | (Method: GET)");
-        List<Product> recommendation = productService.getRecommendation(ingredientName);
+        List<Product> recommendation = productService.getRecommendation(ingredientId);
         logger.info("response - getRecommendation | (URL: /api/v1/product/recommendation) | (Method: GET) | (status: 200)");
         return ResponseEntity.ok(
                 GeneralResponse.builder()
