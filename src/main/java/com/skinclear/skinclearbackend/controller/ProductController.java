@@ -127,15 +127,28 @@ public class ProductController extends AbstractController {
 
     @GetMapping("/recommendation")
     public ResponseEntity<GeneralResponse> getRecommendation(@RequestParam Long ingredientId){
-        logger.info("request - getRecommendation | (URL: /api/v1/product/recommendation) | (Method: GET)");
-        List<Product> recommendation = productService.getRecommendation(ingredientId);
-        logger.info("response - getRecommendation | (URL: /api/v1/product/recommendation) | (Method: GET) | (status: 200)");
-        return ResponseEntity.ok(
-                GeneralResponse.builder()
-                        .success(true)
-                        .data(recommendation)
-                        .build()
-        );
+        try{
+            logger.info("request - getRecommendation | (URL: /api/v1/product/recommendation) | (Method: GET)");
+            List<Product> recommendation = productService.getRecommendation(ingredientId);
+            logger.info("response - getRecommendation | (URL: /api/v1/product/recommendation) | (Method: GET) | (status: 200)");
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .data(recommendation)
+                            .build()
+            );
+        }
+        catch (Exception e){
+            logger.error("response - getRecommendation | (URL: /api/v1/product/recommendation) | (Method: GET) | (status: 400)");
+            return ResponseEntity.badRequest().body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error getting recommendation")
+                            .error(Error.builder().message(e.getMessage()).build())
+                            .errorType(e.getClass().getName())
+                            .build()
+            );
+        }
     }
 
 }
