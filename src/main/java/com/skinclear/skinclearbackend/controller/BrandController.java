@@ -50,11 +50,11 @@ public class BrandController extends AbstractController{
 
     }
 
-    @GetMapping("/search/{keyword}")
-    public ResponseEntity<GeneralResponse> getBrandsByKeywords(@PathVariable String keyword) {
-        logger.info("request - getBrandsByKeywords | (URL: /api/v1/brand/search/{keyword}) | (Method: GET) | (keyword: {})", keyword);
+    @GetMapping("/search")
+    public ResponseEntity<GeneralResponse> getBrandsByKeywords(@RequestParam String keyword) {
+        logger.info("request - getBrandsByKeywords | (URL: /api/v1/brand/search) | (Method: GET) | (keyword: {})", keyword);
         List<Brand> brands = brandService.searchBrandsByName(keyword);
-        logger.info("response - getBrandsByKeywords | (URL: /api/v1/brand/search/{keyword}) | (Method: GET) | (status: 200)");
+        logger.info("response - getBrandsByKeywords | (URL: /api/v1/brand/search) | (Method: GET) | (status: 200)");
         return ResponseEntity.ok(
                 GeneralResponse.builder()
                         .success(true)
