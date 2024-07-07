@@ -96,6 +96,10 @@ public class IngredientService {
         }
         return ingredientRepository.findTop10ByNameStartingWithIgnoreCase(keyword);
     }
+
+    public List<Ingredient> getIngredientsByIds(List<Long> ingredientIds) {
+        return ingredientRepository.findAllById(ingredientIds);
+    }
 }
 
 

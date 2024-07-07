@@ -47,36 +47,33 @@ public class IngredientInsightService {
         ingredientInsightRepository.findByName(ingredientInsight.getName()).ifPresent(existingInsight -> {
             throw new RuntimeException("Ingredient Insight already exists");
         });
-        ingredientInsightRepository.save(new IngredientInsight(
+        IngredientInsight newInsight = createIngredientInsightFromDTO(ingredientInsight);
+        ingredientInsightRepository.save(newInsight);
+    }
+
+    private IngredientInsight createIngredientInsightFromDTO(IngredientInsightDTO ingredientInsight) {
+        return new IngredientInsight(
                 ingredientInsight.getName(),
                 ingredientInsight.getType(),
                 ingredientInsight.getImage(),
                 ingredientInsight.getShortDescription(),
                 ingredientInsight.getDescription()
-        ));
+        );
     }
 
     @Transactional
-    public void updateIngredientInsight(IngredientInsight ingredientInsight, Long id) {
+    public void updateIngredientInsight(IngredientInsightDTO ingredientInsightDTO, Long id) {
         IngredientInsight existingInsight = ingredientInsightRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ingredient Insight does not exist"));
 
-        String updatedName = ingredientInsight.getName();
+        String updatedName = ingredientInsightDTO.getName();
         if (updatedName != null && !updatedName.equals(existingInsight.getName())) {
             ingredientInsightRepository.findByName(updatedName).ifPresent(insight -> {
                 throw new RuntimeException("Ingredient Insight with name " + updatedName + " already exists");
             });
         }
-        IngredientInsight updatedInsight = new IngredientInsight();
+        IngredientInsight updatedInsight = createIngredientInsightFromDTO(ingredientInsightDTO);
         updatedInsight.setId(id);
-        updatedInsight.setName(updatedName);
-        updatedInsight.setType(ingredientInsight.getType());
-        updatedInsight.setImage(ingredientInsight.getImage());
-        updatedInsight.setShortDescription(ingredientInsight.getShortDescription());
-        updatedInsight.setDescription(ingredientInsight.getDescription());
-        updatedInsight.setConcernIngredients(ingredientInsight.getConcernIngredients());
-        updatedInsight.setBenefitsIngredients(ingredientInsight.getBenefitsIngredients());
-        updatedInsight.setWhatItIsIngredients(ingredientInsight.getWhatItIsIngredients());
         ingredientInsightRepository.save(updatedInsight);
     }
 

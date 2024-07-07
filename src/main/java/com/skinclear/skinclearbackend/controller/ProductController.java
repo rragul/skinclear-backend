@@ -1,6 +1,8 @@
 package com.skinclear.skinclearbackend.controller;
 
+import com.skinclear.skinclearbackend.dto.ProductDTO;
 import com.skinclear.skinclearbackend.entity.Product;
+import com.skinclear.skinclearbackend.resource.Error;
 import com.skinclear.skinclearbackend.resource.GeneralResponse;
 import com.skinclear.skinclearbackend.service.ProductService;
 import org.slf4j.Logger;
@@ -48,7 +50,7 @@ public class ProductController extends AbstractController {
     }
 
     @PostMapping
-    public ResponseEntity<GeneralResponse> addProduct(@RequestBody Product product){
+    public ResponseEntity<GeneralResponse> addProduct(@RequestBody ProductDTO product){
         logger.info("request - addProduct | (URL: /api/v1/product) | (Method: POST)");
         productService.addProduct(product);
         logger.info("response - addProduct | (URL: /api/v1/product) | (Method: POST) | (status: 201)");
@@ -61,16 +63,28 @@ public class ProductController extends AbstractController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GeneralResponse> updateProduct(@PathVariable Long id, @RequestBody Product product){
-        logger.info("request - updateProduct | (URL: /api/v1/product/{}) | (Method: PUT)", id);
-        productService.updateProduct(id, product);
-        logger.info("response - updateProduct | (URL: /api/v1/product/{}) | (Method: PUT) | (status: 200)", id);
-        return ResponseEntity.ok(
-                GeneralResponse.builder()
-                        .success(true)
-                        .data("Product updated successfully")
-                        .build()
-        );
+    public ResponseEntity<GeneralResponse> updateProduct(@PathVariable Long id, @RequestBody ProductDTO product){
+        try {
+            logger.info("request - updateProduct | (URL: /api/v1/product/{}) | (Method: PUT)", id);
+            productService.updateProduct(id, product);
+            logger.info("response - updateProduct | (URL: /api/v1/product/{}) | (Method: PUT) | (status: 200)", id);
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .data("Product updated successfully")
+                            .build()
+            );
+        } catch (Exception e) {
+            logger.error("response - updateProduct | (URL: /api/v1/product/{}) | (Method: PUT) | (status: 400)", id);
+            return ResponseEntity.badRequest().body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error updating product")
+                            .error(Error.builder().message(e.getMessage()).build())
+                            .errorType(e.getClass().getName())
+                            .build()
+            );
+        }
     }
 
     @DeleteMapping

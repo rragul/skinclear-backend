@@ -1,18 +1,26 @@
 package com.skinclear.skinclearbackend.service;
 
+import com.skinclear.skinclearbackend.dto.ProductDTO;
+import com.skinclear.skinclearbackend.entity.Brand;
+import com.skinclear.skinclearbackend.entity.Ingredient;
 import com.skinclear.skinclearbackend.entity.Product;
 import com.skinclear.skinclearbackend.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final IngredientService ingredientService;
+    private final BrandService brandService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, IngredientService ingredientService, BrandService brandService) {
         this.productRepository = productRepository;
+        this.ingredientService = ingredientService;
+        this.brandService = brandService;
     }
 
     public List<Product> getAllProduct(){
@@ -24,22 +32,106 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
     }
 
-    public void addProduct(Product product) {
-       productRepository.findProductByName(product.getName())
+    public void addProduct(ProductDTO productDTO) {
+       productRepository.findProductByName(productDTO.getName())
                 .ifPresent(p -> {
-                    throw new RuntimeException("Product already exists with name: " + product.getName());
+                    throw new RuntimeException("Product already exists with name: " + productDTO.getName());
                 });
+
+        Product product = createProductFromProductDTO(productDTO);
         productRepository.save(product);
     }
 
-    public void updateProduct(Long id, Product product) {
+    private Product createProductFromProductDTO(ProductDTO productDTO) {
+        List<Long> ingredientIds = Arrays.stream(productDTO.getIngredientsIDS()).toList();
+
+        List<Ingredient> ingredients = ingredientService.getIngredientsByIds(ingredientIds);
+        Brand brand = brandService.getBrandById(productDTO.getBrandId());
+
+        Product product = initializeProductWithDefaults(productDTO, brand, ingredients);
+
+        ingredients.forEach(ingredient -> {
+            updateProductBasedOnIngredient(product, ingredient);
+        });
+
+        return product;
+    }
+
+    private Product initializeProductWithDefaults(ProductDTO productDTO, Brand brand, List<Ingredient> ingredients) {
+        Product product = new Product();
+
+        product.setAlcoholFree(true);
+        product.setSiliconeFree(true);
+        product.setFragranceFree(true);
+        product.setSulfateFree(true);
+        product.setParabenFree(true);
+        product.setOilFree(true);
+        product.setFungalAcneSafe(true);
+        product.setEuAllergenFree(true);
+        product.setReefSafe(true);
+
+        product.setName(productDTO.getName());
+        product.setType(productDTO.getType());
+        product.setLike(productDTO.getLike());
+        product.setDislike(productDTO.getDislike());
+        product.setWhatItIs(productDTO.getWhatItIs());
+        product.setSpfRating(productDTO.getSpfRating());
+        product.setVegan(productDTO.isVegan());
+        product.setCategory(productDTO.getCategory());
+        product.setSubcategory(productDTO.getSubcategory());
+        product.setBrand(brand);
+        product.setIngredients(ingredients);
+
+        return product;
+    }
+
+    private void updateProductBasedOnIngredient(Product product, Ingredient ingredient) {
+        ingredient.getWhatItIs().forEach(whatItIs -> {
+            if (whatItIs.getName().equals("Alcohol") || whatItIs.getName().equals("Fatty Alcohol")) {
+                product.setAlcoholFree(false);
+            }
+            if (whatItIs.getName().equals("Silicon")) {
+                product.setSiliconeFree(false);
+            }
+            if (whatItIs.getName().equals("Fragrance")) {
+                product.setFragranceFree(false);
+            }
+            if (whatItIs.getName().equals("Sulfate")) {
+                product.setSulfateFree(false);
+            }
+            if (whatItIs.getName().equals("Paraben")) {
+                product.setParabenFree(false);
+            }
+            if (whatItIs.getName().equals("Oil")) {
+                product.setOilFree(false);
+            }
+        });
+
+        ingredient.getConcern().forEach(concern -> {
+            if (concern.getName().equals("Fungal Acne")) {
+                product.setFungalAcneSafe(false);
+            }
+            if (concern.getName().equals("Coral Reefs")) {
+                product.setReefSafe(false);
+            }
+        });
+
+        ingredient.getWhatItIs().forEach(whatItIs -> {
+            if (whatItIs.getName().equals("Preservative") || whatItIs.getName().equals("Paraben") || whatItIs.getName().equals("Fragrance")) {
+                product.setEuAllergenFree(false);
+            }
+        });
+    }
+
+    public void updateProduct(Long id, ProductDTO productDTO) {
         productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
-        productRepository.findProductByName(product.getName())
+        productRepository.findProductByName(productDTO.getName())
                 .ifPresent(p -> {
-                    throw new RuntimeException("Product already exists with name: " + product.getName());
+                    throw new RuntimeException("Product already exists with name: " + productDTO.getName());
                 });
+        Product product = createProductFromProductDTO(productDTO);
         product.setId(id);
         productRepository.save(product);
     }

@@ -94,16 +94,29 @@ public class IngredientInsightController extends AbstractController{
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<GeneralResponse> updateIngredientInsights(@RequestBody IngredientInsight ingredientInsight, @PathVariable Long id) {
-        logger.info("request - updateIngredientInsights | (URL: /api/v1/ingredient-insight/update/{}) | (Method: PUT)", id);
-        ingredientInsightService.updateIngredientInsight(ingredientInsight, id);
-        logger.info("response - updateIngredientInsights | (URL: /api/v1/ingredient-insight/update/{}) | (Method: PUT)", id);
-        return ResponseEntity.ok().body(
-                GeneralResponse.builder()
-                        .success(true)
-                        .message("Ingredient Insight updated successfully")
-                        .build()
-        );
+    public ResponseEntity<GeneralResponse> updateIngredientInsights(@RequestBody IngredientInsightDTO ingredientInsight, @PathVariable Long id) {
+        try{
+            logger.info("request - updateIngredientInsights | (URL: /api/v1/ingredient-insight/update/{}) | (Method: PUT)", id);
+            ingredientInsightService.updateIngredientInsight(ingredientInsight, id);
+            logger.info("response - updateIngredientInsights | (URL: /api/v1/ingredient-insight/update/{}) | (Method: PUT)", id);
+            return ResponseEntity.ok().body(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .message("Ingredient Insight updated successfully")
+                            .build()
+            );
+        }
+        catch (Exception e) {
+            logger.error("Error updating ingredient insight", e);
+            return ResponseEntity.badRequest().body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error updating ingredient insight")
+                            .error(Error.builder().message(e.getMessage()).build())
+                            .errorType(e.getClass().getName())
+                            .build()
+            );
+        }
     }
 
     @DeleteMapping("/delete")
