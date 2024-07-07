@@ -2,7 +2,9 @@ package com.skinclear.skinclearbackend.service;
 
 import com.skinclear.skinclearbackend.dto.BrandDTO;
 import com.skinclear.skinclearbackend.entity.Brand;
+import com.skinclear.skinclearbackend.entity.Product;
 import com.skinclear.skinclearbackend.repository.BrandRepository;
+import com.skinclear.skinclearbackend.repository.ProductRepository;
 import com.skinclear.skinclearbackend.resource.BrandResources;
 import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
@@ -18,9 +20,11 @@ import java.util.stream.Collectors;
 public class BrandService {
 
     private final BrandRepository brandRepository;
+    private final ProductRepository productRepository;
 
-    public BrandService(BrandRepository brandRepository) {
+    public BrandService(BrandRepository brandRepository, ProductRepository productRepository) {
         this.brandRepository = brandRepository;
+        this.productRepository = productRepository;
     }
 
     public Object getAllBrandWithPagination(int page, int size) {
@@ -108,13 +112,39 @@ public class BrandService {
     }
 
     private BrandResources ToDTO(Brand brand) {
+        int totalProduct =productRepository.countByBrand(brand);
+
+        float alcoholFreePercentage = ((float) productRepository.countByBrandAndAlcoholFreeIsTrue(brand)/totalProduct) * 100;
+        float siliconFreePercentage = ((float) productRepository.countByBrandAndSiliconeFreeIsTrue(brand)/totalProduct) * 100;
+        float sulfateFreePercentage = ((float) productRepository.countByBrandAndSulfateFreeIsTrue(brand) / totalProduct) * 100;
+        float parabenFreePercentage = ((float) productRepository.countByBrandAndParabenFreeIsTrue(brand) / totalProduct) * 100;
+        float oilFreePercentage = ((float) productRepository.countByBrandAndOilFreeIsTrue(brand) / totalProduct) * 100;
+        float fungalAcneSafePercentage = ((float) productRepository.countByBrandAndFungalAcneSafeIsTrue(brand) / totalProduct) * 100;
+        float euAllergenFreePercentage = ((float) productRepository.countByBrandAndEuAllergenFreeIsTrue(brand) / totalProduct) * 100;
+        float reefSafePercentage = ((float) productRepository.countByBrandAndReefSafeIsTrue(brand) / totalProduct) * 100;
+        float fragranceFreePercentage = ((float) productRepository.countByBrandAndFragranceFreeIsTrue(brand)/totalProduct) * 100;
+
         BrandResources resources = new BrandResources();
         resources.setId(brand.getId());
         resources.setName(brand.getName());
         resources.setDescription(brand.getDescription());
         resources.setCountry(brand.getCountry());
         resources.setCrueltyFree(brand.isCrueltyFree());
-        // Add logic to set other fields (e.g., totalProduct, noOfCleansers, etc.)
+        resources.setTotalProduct(totalProduct);
+        resources.setNoOfCleansers(productRepository.countByBrandAndSubcategory(brand,"Cleansers"));
+        resources.setNoOfMasks(productRepository.countByBrandAndSubcategory(brand,"Masks"));
+        resources.setNoOfMoisturizers(productRepository.countByBrandAndSubcategory(brand,"Moisturizers"));
+        resources.setNoOfTreatment(productRepository.countByBrandAndSubcategory(brand,"Treatments"));
+        resources.setAlcoholFreePercentage((int) alcoholFreePercentage);
+        resources.setSiliconFreePercentage((int) siliconFreePercentage);
+        resources.setSulfateFreePercentage((int) sulfateFreePercentage);
+        resources.setParabenFreePercentage((int) parabenFreePercentage);
+        resources.setOilFreePercentage((int) oilFreePercentage);
+        resources.setFungalAcneSafePercentage((int) fungalAcneSafePercentage);
+        resources.setEuAllergenFreePercentage((int) euAllergenFreePercentage);
+        resources.setReefSafePercentage((int) reefSafePercentage);
+        resources.setFragranceFreePercentage((int) fragranceFreePercentage);
+
         return resources;
     }
 

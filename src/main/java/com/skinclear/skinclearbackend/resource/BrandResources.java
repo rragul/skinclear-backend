@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.PageRequest;
 
 @Getter
 @Setter
@@ -29,4 +30,5 @@ public class BrandResources {
     private  int fungalAcneSafePercentage;
     private  int euAllergenFreePercentage;
     private  int veganPercentage;
+    private int reefSafePercentage;
 }
