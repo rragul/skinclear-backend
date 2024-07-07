@@ -28,14 +28,31 @@ public class Product {
     private boolean vegan;
     private String category;
     private String subcategory;
+    @Column(name = "alcohol_free")
     private boolean alcoholFree;
+
+    @Column(name = "fragrance_free")
     private boolean fragranceFree;
+
+    @Column(name = "silicone_free")
     private boolean siliconeFree;
+
+    @Column(name = "sulfate_free")
     private boolean sulfateFree;
+
+    @Column(name = "paraben_free")
     private boolean parabenFree;
+
+    @Column(name = "oil_free")
     private boolean oilFree;
+
+    @Column(name = "fungal_acne_safe")
     private boolean fungalAcneSafe;
+
+    @Column(name = "eu_allergen_free")
     private boolean euAllergenFree;
+
+    @Column(name = "reef_safe")
     private boolean reefSafe;
     @JsonManagedReference
     @ManyToOne

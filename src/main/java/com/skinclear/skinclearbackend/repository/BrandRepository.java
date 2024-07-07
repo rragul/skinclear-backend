@@ -1,6 +1,8 @@
 package com.skinclear.skinclearbackend.repository;
 
 import com.skinclear.skinclearbackend.entity.Brand;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,4 +17,14 @@ public interface BrandRepository extends JpaRepository<Brand, Long>{
 
     @Query(value = "SELECT * FROM brand ORDER BY RANDOM() LIMIT 10", nativeQuery = true)
     List<Brand> findFirst10();
+    Page<Brand> findByIsCrueltyFreeAndCountry(boolean isCrueltyFree, String country, Pageable pageable);
+
+    Page<Brand> findByCountry(String country, Pageable pageable);
+
+    // Method to find all brands filtered by isCrueltyFree only
+    Page<Brand> findByIsCrueltyFree(boolean isCrueltyFree, Pageable pageable);
+
+    // Method to find all brands without filtering by isCrueltyFree and country
+    Page<Brand> findAll(Pageable pageable);
+
 }
