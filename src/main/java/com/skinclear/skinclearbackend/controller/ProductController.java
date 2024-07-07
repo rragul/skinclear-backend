@@ -36,17 +36,32 @@ public class ProductController extends AbstractController {
         );
     }
 
+
+
     @GetMapping("/{id}")
     public ResponseEntity<GeneralResponse> getProductById(@PathVariable Long id){
-        logger.info("request - getProductById | (URL: /api/v1/product/{}) | (Method: GET)", id);
-        Product product = productService.getProductById(id);
-        logger.info("response - getProductById | (URL: /api/v1/product/{}) | (Method: GET) | (status: 200)", id);
-        return ResponseEntity.ok(
-                GeneralResponse.builder()
-                        .success(true)
-                        .data(product)
-                        .build()
-        );
+        try {
+            logger.info("request - getProductById | (URL: /api/v1/product/{}) | (Method: GET)", id);
+            Product product = productService.getProductById(id);
+            logger.info("response - getProductById | (URL: /api/v1/product/{}) | (Method: GET) | (status: 200)", id);
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .data(product)
+                            .build()
+            );
+        }
+        catch (Exception e) {
+            logger.error("response - getProductById | (URL: /api/v1/product/{}) | (Method: GET) | (status: 400)", id);
+            return ResponseEntity.badRequest().body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error getting product")
+                            .error(Error.builder().message(e.getMessage()).build())
+                            .errorType(e.getClass().getName())
+                            .build()
+            );
+        }
     }
 
     @PostMapping
@@ -96,6 +111,19 @@ public class ProductController extends AbstractController {
                 GeneralResponse.builder()
                         .success(true)
                         .data("Product deleted successfully")
+                        .build()
+        );
+    }
+
+    @GetMapping("/recommendation")
+    public ResponseEntity<GeneralResponse> getRecommendation(@RequestParam String ingredientName){
+        logger.info("request - getRecommendation | (URL: /api/v1/product/recommendation) | (Method: GET)");
+        List<Product> recommendation = productService.getRecommendation(ingredientName);
+        logger.info("response - getRecommendation | (URL: /api/v1/product/recommendation) | (Method: GET) | (status: 200)");
+        return ResponseEntity.ok(
+                GeneralResponse.builder()
+                        .success(true)
+                        .data(recommendation)
                         .build()
         );
     }

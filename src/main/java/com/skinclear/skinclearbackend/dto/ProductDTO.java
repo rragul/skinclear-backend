@@ -12,8 +12,8 @@ import lombok.Setter;
 public class ProductDTO {
     private String name;
     private String type;
-    private int like;
-    private int dislike;
+    private int likeCount;
+    private int dislikeCount;
     private String WhatItIs;
     private int spfRating;
     private boolean vegan;
