@@ -25,4 +25,12 @@ public class Brand {
     @JsonBackReference
     @OneToMany(mappedBy = "brand")
     private List<Product> products;
+
+    public  Brand(Long id ,String name , String description , String country , Boolean isCrueltyFree){
+        this.id=id;
+        this.name=name;
+        this.description=description;
+        this.country = country;
+        this.isCrueltyFree=isCrueltyFree;
+    }
 }

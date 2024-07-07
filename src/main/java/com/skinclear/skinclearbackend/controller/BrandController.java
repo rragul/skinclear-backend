@@ -1,10 +1,12 @@
 package com.skinclear.skinclearbackend.controller;
 
+import com.skinclear.skinclearbackend.dto.BrandDTO;
 import com.skinclear.skinclearbackend.entity.Brand;
 import com.skinclear.skinclearbackend.resource.GeneralResponse;
 import com.skinclear.skinclearbackend.service.BrandService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,22 @@ public class BrandController extends AbstractController{
     public ResponseEntity<GeneralResponse> getAllBrandsWithPagination(@RequestParam int page , @RequestParam int size) {
         logger.info("request - getAllBrandsWithPagination | (URL: /api/v1/brand) | (Method: GET) | (page: {}) | (size: {})", page, size);
         Object allBrandWithPagination = brandService.getAllBrandWithPagination(page, size);
+        logger.info("response - getAllBrandsWithPagination | (URL: /api/v1/brand) | (Method: GET) | (status: 200)");
+        return ResponseEntity.ok(
+                GeneralResponse.builder()
+                        .success(true)
+                        .data(allBrandWithPagination)
+                        .build()
+        );
+    }
+    @GetMapping("/brandList")
+    public ResponseEntity<GeneralResponse> getAllBrands(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam boolean isCrueltyFree,
+            @RequestParam(required = false) String country) {
+        logger.info("request - getAllBrandsWithPagination | (URL: /api/v1/brand) | (Method: GET) | (page: {}) | (size: {})", page, size);
+        Object allBrandWithPagination = brandService.getAllBrandWithPagination(page, size, isCrueltyFree, country);
         logger.info("response - getAllBrandsWithPagination | (URL: /api/v1/brand) | (Method: GET) | (status: 200)");
         return ResponseEntity.ok(
                 GeneralResponse.builder()
@@ -64,9 +82,9 @@ public class BrandController extends AbstractController{
     }
 
     @PostMapping("/add")
-    public ResponseEntity<GeneralResponse> addBrand(@RequestBody Brand brand) {
-        logger.info("request - addBrand | (URL: /api/v1/brand/add) | (Method: POST) | (brand: {})", brand);
-        brandService.addBrand(brand);
+    public ResponseEntity<GeneralResponse> addBrand(@RequestBody BrandDTO brandDTO) {
+        logger.info("request - addBrand | (URL: /api/v1/brand/add) | (Method: POST) | (brand: {})", brandDTO);
+        brandService.addBrand(brandDTO);
         logger.info("response - addBrand | (URL: /api/v1/brand/add) | (Method: POST) | (status: 201)");
         return ResponseEntity.status(HttpStatus.CREATED).body(
                     GeneralResponse.builder()
