@@ -1,8 +1,8 @@
 package com.skinclear.skinclearbackend.service;
 
+import com.skinclear.skinclearbackend.resource.PagnatedResponse;
 import com.skinclear.skinclearbackend.dto.BrandDTO;
 import com.skinclear.skinclearbackend.entity.Brand;
-import com.skinclear.skinclearbackend.entity.Product;
 import com.skinclear.skinclearbackend.repository.BrandRepository;
 import com.skinclear.skinclearbackend.repository.ProductRepository;
 import com.skinclear.skinclearbackend.resource.BrandResources;
@@ -52,7 +52,14 @@ public class BrandService {
                 brandPage = brandRepository.findByCountry(country, pageRequest);
             }
         }
-        return ToDTOList(brandPage.getContent());
+        PagnatedResponse<BrandResources> response = new PagnatedResponse<>();
+        response.setContent(ToDTOList(brandPage.getContent()));
+        response.setCurrentPage(brandPage.getNumber());
+        response.setTotalPages(brandPage.getTotalPages());
+        response.setTotalElements(brandPage.getTotalElements());
+        response.setPageSize(brandPage.getSize());
+
+        return response;
     }
 
     public Brand getBrandById(Long id) {
