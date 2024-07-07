@@ -5,6 +5,8 @@ import com.skinclear.skinclearbackend.entity.Brand;
 import com.skinclear.skinclearbackend.entity.Ingredient;
 import com.skinclear.skinclearbackend.entity.Product;
 import com.skinclear.skinclearbackend.repository.ProductRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -144,5 +146,10 @@ public class ProductService {
         Ingredient ingredient = ingredientService.getIngredientByName(ingredientName);
         return productRepository.findProductByIngredients(ingredient);
 
+    }
+
+    public Object getAllProductWithPagination(int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.ASC,  "name");
+        return productRepository.findAll(PageRequest.of(page, size, sort));
     }
 }

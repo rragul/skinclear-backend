@@ -36,8 +36,18 @@ public class ProductController extends AbstractController {
         );
     }
 
-
-
+    @GetMapping
+    public ResponseEntity<GeneralResponse> getAllProductsWithPagination(@RequestParam int page, @RequestParam int size){
+        logger.info("request - getAllProductsWithPagination | (URL: /api/v1/product) | (Method: GET) | (page: {}) | (size: {})", page, size);
+        Object allProductWithPagination = productService.getAllProductWithPagination(page, size);
+        logger.info("response - getAllProductsWithPagination | (URL: /api/v1/product) | (Method: GET) | (status: 200)");
+        return ResponseEntity.ok(
+                GeneralResponse.builder()
+                        .success(true)
+                        .data(allProductWithPagination)
+                        .build()
+        );
+    }
     @GetMapping("/{id}")
     public ResponseEntity<GeneralResponse> getProductById(@PathVariable Long id){
         try {
