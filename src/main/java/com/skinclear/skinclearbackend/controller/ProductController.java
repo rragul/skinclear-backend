@@ -64,7 +64,7 @@ public class ProductController extends AbstractController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<GeneralResponse> addProduct(@RequestBody ProductDTO product){
         logger.info("request - addProduct | (URL: /api/v1/product) | (Method: POST)");
         productService.addProduct(product);
