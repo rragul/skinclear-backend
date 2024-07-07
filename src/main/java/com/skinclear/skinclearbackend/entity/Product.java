@@ -19,14 +19,23 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "type")
     private String type;
+    @Column(name = "like_count")
     private int likeCount;
+    @Column(name = "dislike_count")
     private int dislikeCount;
-    private String WhatItIs;
+    @Column(name = "what_it_is")
+    private String whatItIs;
+    @Column(name = "spf_rating")
     private int spfRating;
+    @Column(name = "vegan")
     private boolean vegan;
+    @Column(name = "category")
     private String category;
+    @Column(name = "subcategory")
     private String subcategory;
     @Column(name = "alcohol_free")
     private boolean alcoholFree;
@@ -54,6 +63,7 @@ public class Product {
 
     @Column(name = "reef_safe")
     private boolean reefSafe;
+
     @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "brand_id")

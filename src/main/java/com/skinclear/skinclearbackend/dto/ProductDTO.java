@@ -14,7 +14,7 @@ public class ProductDTO {
     private String type;
     private int likeCount;
     private int dislikeCount;
-    private String WhatItIs;
+    private String whatItIs;
     private int spfRating;
     private boolean vegan;
     private String category;
