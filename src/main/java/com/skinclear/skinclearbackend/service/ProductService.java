@@ -152,4 +152,9 @@ public class ProductService {
         Sort sort = Sort.by(Sort.Direction.ASC,  "name");
         return productRepository.findAll(PageRequest.of(page, size, sort));
     }
+
+    public Object getProductsBySubCategoryNameWithPagination(String subCategory, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.ASC,  "name");
+        return productRepository.findProductBySubcategory(subCategory, PageRequest.of(page, size, sort));
+    }
 }

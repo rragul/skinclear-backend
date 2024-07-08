@@ -48,6 +48,19 @@ public class ProductController extends AbstractController {
                         .build()
         );
     }
+
+    @GetMapping("/sub-category")
+    public ResponseEntity<GeneralResponse> getProductsBySubCategoryNameWithPagination(@RequestParam String subCategory, @RequestParam int page, @RequestParam int size){
+        logger.info("request - getProductsBySubCategoryByNameWithPagination | (URL: /api/v1/product/sub-category) | (Method: GET) | (subCategory: {}) | (page: {}) | (size: {})", subCategory, page, size);
+        Object productsBySubCategoryByNameWithPagination = productService.getProductsBySubCategoryNameWithPagination(subCategory, page, size);
+        logger.info("response - getProductsBySubCategoryByNameWithPagination | (URL: /api/v1/product/sub-category) | (Method: GET) | (status: 200)");
+        return ResponseEntity.ok(
+                GeneralResponse.builder()
+                        .success(true)
+                        .data(productsBySubCategoryByNameWithPagination)
+                        .build()
+        );
+    }
     @GetMapping("/{id}")
     public ResponseEntity<GeneralResponse> getProductById(@PathVariable Long id){
         try {
@@ -112,7 +125,7 @@ public class ProductController extends AbstractController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<GeneralResponse> deleteProduct(@RequestBody List<Long> ids){
         logger.info("request - deleteProduct | (URL: /api/v1/product) | (Method: DELETE)");
         productService.deleteProduct(ids);
