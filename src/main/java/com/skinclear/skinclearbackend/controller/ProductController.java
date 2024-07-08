@@ -100,7 +100,7 @@ public class ProductController extends AbstractController {
         );
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<GeneralResponse> updateProduct(@PathVariable Long id, @RequestBody ProductDTO product){
         try {
             logger.info("request - updateProduct | (URL: /api/v1/product/{}) | (Method: PUT)", id);
