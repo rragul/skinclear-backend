@@ -39,6 +39,7 @@ public class IngredientService {
 
     private Page<IngredientResponse> covertToIngredientResponse(Page<Ingredient> ingredientsPage) {
         return ingredientsPage.map(ingredient -> new IngredientResponse(
+                ingredient.getId(),
                 ingredient.getName(),
                 ingredient.getWhatItDoes(),
                 ingredient.getOtherNames(),
@@ -66,6 +67,7 @@ public class IngredientService {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ingredient not found for id: " + id));
         return new IngredientResponse(
+                ingredient.getId(),
                 ingredient.getName(),
                 ingredient.getWhatItDoes(),
                 ingredient.getOtherNames(),
@@ -141,6 +143,7 @@ public class IngredientService {
                 : ingredientRepository.findTop10ByNameStartingWithIgnoreCase(keyword);
 
         return ingredients.stream().map(ingredient -> new IngredientResponse(
+                ingredient.getId(),
                 ingredient.getName(),
                 ingredient.getWhatItDoes(),
                 ingredient.getOtherNames(),
@@ -164,6 +167,7 @@ public class IngredientService {
         Ingredient ingredient = ingredientRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Ingredient not found with name: " + name));
         return new IngredientResponse(
+                ingredient.getId(),
                 ingredient.getName(),
                 ingredient.getWhatItDoes(),
                 ingredient.getOtherNames(),

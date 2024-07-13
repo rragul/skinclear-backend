@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IngredientResponse {
+    private Long id;
     private String name;
     private String whatItDoes;
     private String otherNames;
