@@ -4,35 +4,80 @@ import com.skinclear.skinclearbackend.dto.IngredientDTO;
 import com.skinclear.skinclearbackend.entity.Ingredient;
 import com.skinclear.skinclearbackend.entity.IngredientInsight;
 import com.skinclear.skinclearbackend.repository.IngredientRepository;
+import com.skinclear.skinclearbackend.repository.ProductRepository;
+import com.skinclear.skinclearbackend.resource.IngredientResponse;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
+    private final ProductRepository productRepository;
     private  final  IngredientInsightService ingredientInsightService;
-
     public IngredientService
-            (IngredientRepository ingredientRepository, IngredientInsightService ingredientInsightService)
+            (IngredientRepository ingredientRepository, IngredientInsightService ingredientInsightService, ProductRepository productRepository)
     {
         this.ingredientRepository = ingredientRepository;
         this.ingredientInsightService = ingredientInsightService;
+        this.productRepository = productRepository;
     }
 
-    public Object getAllIngredientWithPagination(int page, int size) {
-        Sort sort = Sort.by(Sort.Direction.ASC,  "name");
-        return ingredientRepository.findAll(PageRequest.of(page, size,sort));
+    public Page<IngredientResponse> getAllIngredientWithPagination(int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "name");
+        Page<Ingredient> ingredientsPage = ingredientRepository.findAll(PageRequest.of(page, size, sort));
+
+        return covertToIngredientResponse(ingredientsPage);
+    }
+
+    private Page<IngredientResponse> covertToIngredientResponse(Page<Ingredient> ingredientsPage) {
+        return ingredientsPage.map(ingredient -> new IngredientResponse(
+                ingredient.getName(),
+                ingredient.getWhatItDoes(),
+                ingredient.getOtherNames(),
+                ingredient.getRarity(),
+                ingredient.getLikeCount(),
+                ingredient.getDislikeCount(),
+                ingredient.getExplain(),
+                ingredient.getWhatItIs().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getBenefits().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getConcern().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                getProductCount(ingredient)
+        ));
+    }
+
+    private int getProductCount(Ingredient ingredient) {
+        return productRepository.countProductsByIngredientId(ingredient.getId());
     }
 
     public Ingredient getIngredientById(Long id) {
         return ingredientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ingredient not found for id: " + id));
+    }
+
+    public IngredientResponse getIngredientResponseById(Long id) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found for id: " + id));
+        return new IngredientResponse(
+                ingredient.getName(),
+                ingredient.getWhatItDoes(),
+                ingredient.getOtherNames(),
+                ingredient.getRarity(),
+                ingredient.getLikeCount(),
+                ingredient.getDislikeCount(),
+                ingredient.getExplain(),
+                ingredient.getWhatItIs().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getBenefits().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getConcern().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                getProductCount(ingredient)
+        );
     }
 
     public void addIngredient(IngredientDTO ingredientDTO) {
@@ -90,20 +135,47 @@ public class IngredientService {
 
     }
 
-    public List<Ingredient> searchIngredientsByName(String keyword) {
-        if (keyword == null || keyword.isBlank()) {
-            return ingredientRepository.findFirst10();
-        }
-        return ingredientRepository.findTop10ByNameStartingWithIgnoreCase(keyword);
+    public List<IngredientResponse> searchIngredientsByName(String keyword) {
+        List<Ingredient> ingredients = (keyword == null || keyword.isBlank())
+                ? ingredientRepository.findFirst10()
+                : ingredientRepository.findTop10ByNameStartingWithIgnoreCase(keyword);
+
+        return ingredients.stream().map(ingredient -> new IngredientResponse(
+                ingredient.getName(),
+                ingredient.getWhatItDoes(),
+                ingredient.getOtherNames(),
+                ingredient.getRarity(),
+                ingredient.getLikeCount(),
+                ingredient.getDislikeCount(),
+                ingredient.getExplain(),
+                ingredient.getWhatItIs().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getBenefits().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getConcern().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                getProductCount(ingredient)
+        )).collect(Collectors.toList());
     }
+
 
     public List<Ingredient> getIngredientsByIds(List<Long> ingredientIds) {
         return ingredientRepository.findAllById(ingredientIds);
     }
 
-    public Ingredient getIngredientByName(String ingredientName) {
-        return ingredientRepository.findByName(ingredientName)
-                .orElseThrow(() -> new RuntimeException("Ingredient not found with name: " + ingredientName));
+    public IngredientResponse getIngredientResponseByName(String name) {
+        Ingredient ingredient = ingredientRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found with name: " + name));
+        return new IngredientResponse(
+                ingredient.getName(),
+                ingredient.getWhatItDoes(),
+                ingredient.getOtherNames(),
+                ingredient.getRarity(),
+                ingredient.getLikeCount(),
+                ingredient.getDislikeCount(),
+                ingredient.getExplain(),
+                ingredient.getWhatItIs().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getBenefits().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getConcern().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                getProductCount(ingredient)
+        );
     }
 }
 

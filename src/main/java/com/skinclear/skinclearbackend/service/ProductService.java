@@ -5,6 +5,7 @@ import com.skinclear.skinclearbackend.entity.Brand;
 import com.skinclear.skinclearbackend.entity.Ingredient;
 import com.skinclear.skinclearbackend.entity.Product;
 import com.skinclear.skinclearbackend.repository.ProductRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -156,5 +157,9 @@ public class ProductService {
     public Object getProductsBySubCategoryNameWithPagination(String subCategory, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.ASC,  "name");
         return productRepository.findProductBySubcategory(subCategory, PageRequest.of(page, size, sort));
+    }
+
+    public Page<Product> getProductsByFilter(String subCategory, String preference, String benefits, String whatItIs, String ingredient, String brand, int page, int size) {
+        return productRepository.findProductsByFilter(subCategory, preference, benefits, whatItIs, ingredient, brand, PageRequest.of(page, size));
     }
 }
