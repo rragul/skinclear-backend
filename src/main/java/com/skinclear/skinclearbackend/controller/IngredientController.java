@@ -31,15 +31,27 @@ public class IngredientController extends AbstractController{
     public ResponseEntity<GeneralResponse> getAllIngredientsWithPagination(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        logger.info("request - getAllIngredientsWithPagination | (URL: /api/v1/ingredient) | (Method: GET) | (page: {}) | (size: {})", page, size);
-        Page<IngredientResponse> allIngredientWithPagination = ingredientService.getAllIngredientWithPagination(page, size);
-        logger.info("response - getAllIngredientsWithPagination | (URL: /api/v1/ingredient) | (Method: GET) | (status: 200)");
-        return ResponseEntity.ok(
-                GeneralResponse.builder()
-                        .success(true)
-                        .data(allIngredientWithPagination)
-                        .build()
-        );
+
+        try {
+            logger.info("request - getAllIngredientsWithPagination | (URL: /api/v1/ingredient) | (Method: GET) | (page: {}) | (size: {})", page, size);
+            Page<IngredientResponse> allIngredientWithPagination = ingredientService.getAllIngredientWithPagination(page, size);
+            logger.info("response - getAllIngredientsWithPagination | (URL: /api/v1/ingredient) | (Method: GET) | (status: 200)");
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .data(allIngredientWithPagination)
+                            .build()
+            );
+        }
+        catch (Exception e) {
+            logger.error("response - getIngredientById | (URL: /api/v1/ingredient/{id}) | (Method: GET) | (status: 404)");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message(e.getMessage())
+                            .build()
+            );
+        }
     }
 
 

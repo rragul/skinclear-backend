@@ -18,7 +18,6 @@ public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-     @Column(unique = true)
     private String name;
     private String whatItDoes;
     private String otherNames;
@@ -32,24 +31,24 @@ public class Ingredient {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "ingredient_and_what_it_is_insights",
-            joinColumns = @JoinColumn(name = "ingredient_id"),
-            inverseJoinColumns = @JoinColumn(name = "insight_id"))
+            joinColumns = @JoinColumn(name = "ingredient_what_it_isid"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_insight_what_it_is_id"))
     private Set<IngredientInsight> whatItIs;
 
     @JsonManagedReference
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "ingredient_and_benefits_insights",
-            joinColumns = @JoinColumn(name = "ingredient_id"),
-            inverseJoinColumns = @JoinColumn(name = "insight_id"))
+            joinColumns = @JoinColumn(name = "ingredient_benefits_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_insight_benefits_id"))
     private Set<IngredientInsight> benefits;
 
     @JsonManagedReference
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "ingredient_and_concern_insights",
-            joinColumns = @JoinColumn(name = "ingredient_id"),
-            inverseJoinColumns = @JoinColumn(name = "insight_id"))
+            joinColumns = @JoinColumn(name = "ingredient_concern_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_insight_concern_id"))
     private Set<IngredientInsight> concern;
 
     public Ingredient(String name, String whatItDoes, Set<IngredientInsight> benefits, String otherNames,
