@@ -57,4 +57,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
             @Param("brand") String brand,
             PageRequest pageRequest
     );
+
+    @Query("SELECT COUNT(p) FROM Product p JOIN p.ingredients i WHERE i.id = :ingredientId")
+    int countProductsByIngredientId(@Param("ingredientId") Long ingredientId);
 }
