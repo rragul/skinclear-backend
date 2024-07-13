@@ -19,24 +19,27 @@ public class IngredientInsight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
     private String shortDescription;
     private String type;
     private String image;
+
     @Column(length = 1000)
     private String description;
 
     @JsonBackReference
-    @ManyToMany(mappedBy = "whatItIs")
+    @ManyToMany(mappedBy = "whatItIs", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Ingredient> whatItIsIngredients;
 
     @JsonBackReference
-    @ManyToMany(mappedBy = "benefits")
+    @ManyToMany(mappedBy = "benefits", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Ingredient> benefitsIngredients;
 
     @JsonBackReference
-    @ManyToMany(mappedBy = "concern")
+    @ManyToMany(mappedBy = "concern", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Ingredient> concernIngredients;
 
     public IngredientInsight(String name, String type, String image, String shortDescription, String description) {

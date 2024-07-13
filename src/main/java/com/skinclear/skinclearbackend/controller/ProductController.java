@@ -7,6 +7,7 @@ import com.skinclear.skinclearbackend.resource.GeneralResponse;
 import com.skinclear.skinclearbackend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,9 @@ public class ProductController extends AbstractController {
     }
 
     @GetMapping
-    public ResponseEntity<GeneralResponse> getAllProductsWithPagination(@RequestParam int page, @RequestParam int size){
+    public ResponseEntity<GeneralResponse> getAllProductsWithPagination(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size){
         logger.info("request - getAllProductsWithPagination | (URL: /api/v1/product) | (Method: GET) | (page: {}) | (size: {})", page, size);
         Object allProductWithPagination = productService.getAllProductWithPagination(page, size);
         logger.info("response - getAllProductsWithPagination | (URL: /api/v1/product) | (Method: GET) | (status: 200)");
@@ -157,6 +160,38 @@ public class ProductController extends AbstractController {
                     GeneralResponse.builder()
                             .success(false)
                             .message("Error getting recommendation")
+                            .error(Error.builder().message(e.getMessage()).build())
+                            .errorType(e.getClass().getName())
+                            .build()
+            );
+        }
+    }
+    @GetMapping("/filter")
+    public ResponseEntity<GeneralResponse> getProductsByFilter(
+            @RequestParam(required = false) String subCategory,
+            @RequestParam(required = false) String preference,
+            @RequestParam(required = false) String benefits,
+            @RequestParam(required = false) String whatItIs,
+            @RequestParam(required = false) String ingredient,
+            @RequestParam(required = false) String brand,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            logger.info("request - getProductsByFilter | (URL: /api/v1/product/filter) | (Method: GET)");
+            Page<Product> productsByFilter = productService.getProductsByFilter(subCategory, preference, benefits, whatItIs, ingredient, brand, page, size);
+            logger.info("response - getProductsByFilter | (URL: /api/v1/product/filter) | (Method: GET) | (status: 200)");
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .data(productsByFilter.getContent())
+                            .build()
+            );
+        } catch (Exception e) {
+            logger.error("response - getProductsByFilter | (URL: /api/v1/product/filter) | (Method: GET) | (status: 400)");
+            return ResponseEntity.badRequest().body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error getting products by filter")
                             .error(Error.builder().message(e.getMessage()).build())
                             .errorType(e.getClass().getName())
                             .build()
