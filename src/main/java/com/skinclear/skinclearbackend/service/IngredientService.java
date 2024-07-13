@@ -164,7 +164,7 @@ public class IngredientService {
     }
 
     public IngredientResponse getIngredientResponseByName(String name) {
-        Ingredient ingredient = ingredientRepository.findByName(name)
+        Ingredient ingredient = ingredientRepository.findByNameIgnoreCase(name)
                 .orElseThrow(() -> new RuntimeException("Ingredient not found with name: " + name));
         return new IngredientResponse(
                 ingredient.getId(),

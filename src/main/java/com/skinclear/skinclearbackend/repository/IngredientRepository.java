@@ -17,4 +17,6 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long>{
     List<Ingredient> findTop10ByNameStartingWithIgnoreCase(String keyword);
     @Query(value = "SELECT * FROM ingredient ORDER BY RANDOM() LIMIT 10", nativeQuery = true)
     List<Ingredient> findFirst10();
+
+    Optional<Ingredient> findByNameIgnoreCase(String name);
 }

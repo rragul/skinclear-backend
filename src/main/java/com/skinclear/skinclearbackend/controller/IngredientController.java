@@ -128,7 +128,7 @@ public class IngredientController extends AbstractController{
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<GeneralResponse> deleteBrand(@RequestBody List<Long> ids) {
+    public ResponseEntity<GeneralResponse> deleteIngredient(@RequestBody List<Long> ids) {
         logger.info("request - deleteBrand | (URL: /api/v1/ingredient/delete) | (Method: DELETE) | (ids: {})", ids);
         ingredientService.deleteIngredient(ids);
         logger.info("response - deleteBrand | (URL: /api/v1/ingredient/delete) | (Method: DELETE) | (status: 200)");
@@ -142,7 +142,7 @@ public class IngredientController extends AbstractController{
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<GeneralResponse> updateBrand(@RequestBody IngredientDTO ingredient, @PathVariable Long id) {
+    public ResponseEntity<GeneralResponse> updateIngredient(@RequestBody IngredientDTO ingredient, @PathVariable Long id) {
         try {
             logger.info("request - updateBrand | (URL: /api/v1/ingredient/update/{id}) | (Method: PUT) | (ingredient: {}) | (id: {})", ingredient, id);
             ingredientService.updateIngredient(ingredient, id);
