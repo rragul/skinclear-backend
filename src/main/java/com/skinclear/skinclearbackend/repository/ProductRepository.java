@@ -60,4 +60,9 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
     @Query("SELECT COUNT(p) FROM Product p JOIN p.ingredients i WHERE i.id = :ingredientId")
     int countProductsByIngredientId(@Param("ingredientId") Long ingredientId);
+
+    @Query(value = "SELECT * FROM product ORDER BY RANDOM() LIMIT 10", nativeQuery = true)
+    List<Product> findFirst10();
+
+    List<Product> findTop10ByNameStartingWithIgnoreCase(String keyword);
 }

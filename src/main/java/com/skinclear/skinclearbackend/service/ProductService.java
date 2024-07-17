@@ -162,4 +162,11 @@ public class ProductService {
     public Page<Product> getProductsByFilter(String subCategory, String preference, String benefits, String whatItIs, String ingredient, String brand, int page, int size) {
         return productRepository.findProductsByFilter(subCategory, preference, benefits, whatItIs, ingredient, brand, PageRequest.of(page, size));
     }
+
+    public List<Product> searchProduct(String keyword) {
+        if (keyword == null || keyword.isEmpty()) {
+            return productRepository.findFirst10();
+        }
+        return productRepository.findTop10ByNameStartingWithIgnoreCase(keyword);
+    }
 }

@@ -199,4 +199,29 @@ public class ProductController extends AbstractController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<GeneralResponse> searchProduct(@RequestParam String keyword){
+        try {
+            logger.info("request - searchProduct | (URL: /api/v1/product/search) | (Method: GET)");
+            List<Product> products = productService.searchProduct(keyword);
+            logger.info("response - searchProduct | (URL: /api/v1/product/search) | (Method: GET) | (status: 200)");
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .data(products)
+                            .build()
+            );
+        } catch (Exception e) {
+            logger.error("response - searchProduct | (URL: /api/v1/product/search) | (Method: GET) | (status: 400)");
+            return ResponseEntity.badRequest().body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error searching product")
+                            .error(Error.builder().message(e.getMessage()).build())
+                            .errorType(e.getClass().getName())
+                            .build()
+            );
+        }
+    }
+
 }
