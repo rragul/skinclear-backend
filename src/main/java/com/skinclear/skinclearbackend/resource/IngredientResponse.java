@@ -1,5 +1,6 @@
 package com.skinclear.skinclearbackend.resource;
 
+import com.skinclear.skinclearbackend.entity.IngredientInsight;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,8 +21,8 @@ public class IngredientResponse {
     private Integer likeCount;
     private Integer dislikeCount;
     private String explain;
-    private List<String> whatItIs;
-    private List<String> benefits;
-    private List<String> concern;
+    private List<IngredientInsight> whatItIs;
+    private List<IngredientInsight> benefits;
+    private List<IngredientInsight> concern;
     private int productCount;
 }

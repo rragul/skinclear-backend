@@ -47,9 +47,9 @@ public class IngredientService {
                 ingredient.getLikeCount(),
                 ingredient.getDislikeCount(),
                 ingredient.getExplain(),
-                ingredient.getWhatItIs().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
-                ingredient.getBenefits().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
-                ingredient.getConcern().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getWhatItIs().stream().toList(),
+                ingredient.getBenefits().stream().toList(),
+                ingredient.getConcern().stream().toList(),
                 getProductCount(ingredient)
         ));
     }
@@ -75,9 +75,9 @@ public class IngredientService {
                 ingredient.getLikeCount(),
                 ingredient.getDislikeCount(),
                 ingredient.getExplain(),
-                ingredient.getWhatItIs().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
-                ingredient.getBenefits().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
-                ingredient.getConcern().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getWhatItIs().stream().toList(),
+                ingredient.getBenefits().stream().toList(),
+                ingredient.getConcern().stream().toList(),
                 getProductCount(ingredient)
         );
     }
@@ -151,9 +151,9 @@ public class IngredientService {
                 ingredient.getLikeCount(),
                 ingredient.getDislikeCount(),
                 ingredient.getExplain(),
-                ingredient.getWhatItIs().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
-                ingredient.getBenefits().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
-                ingredient.getConcern().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getWhatItIs().stream().toList(),
+                ingredient.getBenefits().stream().toList(),
+                ingredient.getConcern().stream().toList(),
                 getProductCount(ingredient)
         )).collect(Collectors.toList());
     }
@@ -175,9 +175,9 @@ public class IngredientService {
                 ingredient.getLikeCount(),
                 ingredient.getDislikeCount(),
                 ingredient.getExplain(),
-                ingredient.getWhatItIs().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
-                ingredient.getBenefits().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
-                ingredient.getConcern().stream().map(IngredientInsight::getName).collect(Collectors.toList()),
+                ingredient.getWhatItIs().stream().toList(),
+                ingredient.getBenefits().stream().toList(),
+                ingredient.getConcern().stream().toList(),
                 getProductCount(ingredient)
         );
     }
