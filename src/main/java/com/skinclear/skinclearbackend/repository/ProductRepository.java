@@ -31,7 +31,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     List<Product> findProductByIngredients(Ingredient ingredients);
 
     Object findProductBySubcategory(String subCategory, PageRequest of);
-    @Query("SELECT p FROM Product p LEFT JOIN p.ingredients i WHERE " +
+    @Query("SELECT DISTINCT p FROM Product p LEFT JOIN p.ingredients i WHERE " +
             "(:subCategory IS NULL OR p.subcategory = :subCategory) AND " +
             "(:preference IS NULL OR " +
             "    (:preference = 'vegan' AND p.vegan = true) OR " +
@@ -44,9 +44,9 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
             "    (:preference = 'fungal_acne_safe' AND p.fungalAcneSafe = true) OR " +
             "    (:preference = 'eu_allergen_free' AND p.euAllergenFree = true) OR " +
             "    (:preference = 'reef_safe' AND p.reefSafe = true)) AND " +
-            "(:benefits IS NULL OR i.name LIKE %:benefits%) AND " +
+            "(:benefits IS NULL OR LOWER(i.name) LIKE LOWER(CONCAT('%', :benefits, '%'))) AND " +
             "(:type IS NULL OR p.type = :type) AND " +
-            "(:ingredient IS NULL OR :ingredient IN (SELECT i.name FROM p.ingredients i)) AND " +
+            "(:ingredient IS NULL OR :ingredient IN (SELECT ing.name FROM p.ingredients ing)) AND " +
             "(:brand IS NULL OR p.brand.name = :brand)")
     Page<Product> findProductsByFilter(
             @Param("subCategory") String subCategory,
@@ -57,6 +57,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
             @Param("brand") String brand,
             PageRequest pageRequest
     );
+
 
     @Query("SELECT COUNT(p) FROM Product p JOIN p.ingredients i WHERE i.id = :ingredientId")
     int countProductsByIngredientId(@Param("ingredientId") Long ingredientId);
