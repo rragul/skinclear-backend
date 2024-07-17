@@ -171,14 +171,14 @@ public class ProductController extends AbstractController {
             @RequestParam(required = false) String subCategory,
             @RequestParam(required = false) String preference,
             @RequestParam(required = false) String benefits,
-            @RequestParam(required = false) String whatItIs,
+            @RequestParam(required = false) String type,
             @RequestParam(required = false) String ingredient,
             @RequestParam(required = false) String brand,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         try {
             logger.info("request - getProductsByFilter | (URL: /api/v1/product/filter) | (Method: GET)");
-            Page<Product> productsByFilter = productService.getProductsByFilter(subCategory, preference, benefits, whatItIs, ingredient, brand, page, size);
+            Page<Product> productsByFilter = productService.getProductsByFilter(subCategory, preference, benefits, type, ingredient, brand, page, size);
             logger.info("response - getProductsByFilter | (URL: /api/v1/product/filter) | (Method: GET) | (status: 200)");
             return ResponseEntity.ok(
                     GeneralResponse.builder()

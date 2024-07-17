@@ -45,14 +45,14 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
             "    (:preference = 'eu_allergen_free' AND p.euAllergenFree = true) OR " +
             "    (:preference = 'reef_safe' AND p.reefSafe = true)) AND " +
             "(:benefits IS NULL OR p.whatItIs LIKE %:benefits%) AND " +
-            "(:whatItIs IS NULL OR p.whatItIs LIKE %:whatItIs%) AND " +
+"(:type IS NULL OR p.whatItIs = :type) AND " +
             "(:ingredient IS NULL OR :ingredient IN (SELECT i.name FROM p.ingredients i)) AND " +
             "(:brand IS NULL OR p.brand.name = :brand)")
     Page<Product> findProductsByFilter(
             @Param("subCategory") String subCategory,
             @Param("preference") String preference,
             @Param("benefits") String benefits,
-            @Param("whatItIs") String whatItIs,
+            @Param("type") String type,
             @Param("ingredient") String ingredient,
             @Param("brand") String brand,
             PageRequest pageRequest

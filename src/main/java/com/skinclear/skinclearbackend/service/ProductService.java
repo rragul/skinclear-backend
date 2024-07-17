@@ -159,8 +159,8 @@ public class ProductService {
         return productRepository.findProductBySubcategory(subCategory, PageRequest.of(page, size, sort));
     }
 
-    public Page<Product> getProductsByFilter(String subCategory, String preference, String benefits, String whatItIs, String ingredient, String brand, int page, int size) {
-        return productRepository.findProductsByFilter(subCategory, preference, benefits, whatItIs, ingredient, brand, PageRequest.of(page, size));
+    public Page<Product> getProductsByFilter(String subCategory, String preference, String benefits, String type, String ingredient, String brand, int page, int size) {
+        return productRepository.findProductsByFilter(subCategory, preference, benefits, type, ingredient, brand, PageRequest.of(page, size));
     }
 
     public List<Product> searchProduct(String keyword) {
