@@ -31,7 +31,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     List<Product> findProductByIngredients(Ingredient ingredients);
 
     Object findProductBySubcategory(String subCategory, PageRequest of);
-    @Query("SELECT p FROM Product p WHERE " +
+    @Query("SELECT p FROM Product p LEFT JOIN p.ingredients i WHERE " +
             "(:subCategory IS NULL OR p.subcategory = :subCategory) AND " +
             "(:preference IS NULL OR " +
             "    (:preference = 'vegan' AND p.vegan = true) OR " +
@@ -44,8 +44,8 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
             "    (:preference = 'fungal_acne_safe' AND p.fungalAcneSafe = true) OR " +
             "    (:preference = 'eu_allergen_free' AND p.euAllergenFree = true) OR " +
             "    (:preference = 'reef_safe' AND p.reefSafe = true)) AND " +
-            "(:benefits IS NULL OR p.whatItIs LIKE %:benefits%) AND " +
-"(:type IS NULL OR p.whatItIs = :type) AND " +
+            "(:benefits IS NULL OR i.name LIKE %:benefits%) AND " +
+            "(:type IS NULL OR p.type = :type) AND " +
             "(:ingredient IS NULL OR :ingredient IN (SELECT i.name FROM p.ingredients i)) AND " +
             "(:brand IS NULL OR p.brand.name = :brand)")
     Page<Product> findProductsByFilter(
