@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -91,9 +92,9 @@ public class ProductController extends AbstractController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<GeneralResponse> addProduct(@RequestBody ProductDTO product){
+    public ResponseEntity<GeneralResponse> addProduct(@RequestParam("image") MultipartFile image, @RequestBody ProductDTO product){
         logger.info("request - addProduct | (URL: /api/v1/product) | (Method: POST)");
-        productService.addProduct(product);
+        productService.addProduct(product, image);
         logger.info("response - addProduct | (URL: /api/v1/product) | (Method: POST) | (status: 201)");
         return ResponseEntity.ok(
                 GeneralResponse.builder()

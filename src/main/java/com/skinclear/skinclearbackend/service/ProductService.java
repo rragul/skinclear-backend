@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,11 +20,13 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final IngredientService ingredientService;
     private final BrandService brandService;
+    private final S3Service s3Service;
 
-    public ProductService(ProductRepository productRepository, IngredientService ingredientService, BrandService brandService) {
+    public ProductService(ProductRepository productRepository, IngredientService ingredientService, BrandService brandService, S3Service s3Service) {
         this.productRepository = productRepository;
         this.ingredientService = ingredientService;
         this.brandService = brandService;
+        this.s3Service = s3Service;
     }
 
     public List<Product> getAllProduct(){
@@ -35,13 +38,16 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
     }
 
-    public void addProduct(ProductDTO productDTO) {
+    public void addProduct(ProductDTO productDTO, MultipartFile image) {
        productRepository.findProductByName(productDTO.getName())
                 .ifPresent(p -> {
                     throw new RuntimeException("Product already exists with name: " + productDTO.getName());
                 });
 
         Product product = createProductFromProductDTO(productDTO);
+        String fileName = productDTO.getName() + "." + image.getOriginalFilename().split("\\.")[1];
+        String imageUrl = s3Service.uploadFile(image,fileName);
+        product.setImage(imageUrl);
         productRepository.save(product);
     }
 

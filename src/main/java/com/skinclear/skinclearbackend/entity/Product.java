@@ -37,6 +37,8 @@ public class Product {
     private String category;
     @Column(name = "subcategory")
     private String subcategory;
+    @Column(name = "image")
+    private String image;
     @Column(name = "alcohol_free")
     private boolean alcoholFree;
 
