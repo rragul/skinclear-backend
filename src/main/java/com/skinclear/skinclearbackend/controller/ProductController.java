@@ -95,6 +95,32 @@ public class ProductController extends AbstractController {
         }
     }
 
+    @GetMapping("/name")
+    public ResponseEntity<GeneralResponse> getProductByName(@RequestParam String name){
+        try {
+            logger.info("request - getProductByName | (URL: /api/v1/product/name) | (Method: GET)");
+            Product product = productService.getProductByName(name);
+            logger.info("response - getProductByName | (URL: /api/v1/product/name) | (Method: GET) | (status: 200)");
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .data(product)
+                            .build()
+            );
+        }
+        catch (Exception e) {
+            logger.error("response - getProductByName | (URL: /api/v1/product/name) | (Method: GET) | (status: 400)");
+            return ResponseEntity.badRequest().body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error getting product")
+                            .error(Error.builder().message(e.getMessage()).build())
+                            .errorType(e.getClass().getName())
+                            .build()
+            );
+        }
+    }
+
     @PostMapping("/add")
     public ResponseEntity<GeneralResponse> addProduct(
             @RequestParam("image") MultipartFile image,

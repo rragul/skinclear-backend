@@ -181,4 +181,9 @@ public class ProductService {
         }
         return productRepository.findTop10ByNameStartingWithIgnoreCase(keyword);
     }
+
+    public Product getProductByName(String name) {
+        return productRepository.findProductByName(name)
+                .orElseThrow(() -> new RuntimeException("Product not found with name: " + name));
+    }
 }
