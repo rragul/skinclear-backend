@@ -66,4 +66,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     List<Product> findFirst10();
 
     List<Product> findTop10ByNameStartingWithIgnoreCase(String keyword);
+    @Query("SELECT p FROM Product p JOIN p.ingredients i WHERE p.type = :type AND i IN :ingredients GROUP BY p HAVING COUNT(i) >= 3 LIMIT 3")
+    List<Product> findProductByTypeAndIngredients(String type, List<Ingredient> ingredients);
 }

@@ -121,6 +121,32 @@ public class ProductController extends AbstractController {
         }
     }
 
+   @GetMapping("/similar")
+    public ResponseEntity<GeneralResponse> getSimilarProducts(@RequestParam Long productId){
+        try {
+            logger.info("request - getSimilarProducts | (URL: /api/v1/product/similar) | (Method: GET)");
+            List<Product> similarProducts = productService.getSimilarProducts(productId);
+            logger.info("response - getSimilarProducts | (URL: /api/v1/product/similar) | (Method: GET) | (status: 200)");
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .data(similarProducts)
+                            .build()
+            );
+        }
+        catch (Exception e) {
+            logger.error("response - getSimilarProducts | (URL: /api/v1/product/similar) | (Method: GET) | (status: 400)");
+            return ResponseEntity.badRequest().body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error getting similar products")
+                            .error(Error.builder().message(e.getMessage()).build())
+                            .errorType(e.getClass().getName())
+                            .build()
+            );
+        }
+    }
+
     @PostMapping("/add")
     public ResponseEntity<GeneralResponse> addProduct(
             @RequestParam("image") MultipartFile image,

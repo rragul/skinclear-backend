@@ -186,4 +186,9 @@ public class ProductService {
         return productRepository.findProductByName(name)
                 .orElseThrow(() -> new RuntimeException("Product not found with name: " + name));
     }
+
+    public List<Product> getSimilarProducts(Long productId) {
+        Product product = getProductById(productId);
+        return productRepository.findProductByTypeAndIngredients(product.getType(), product.getIngredients());
+    }
 }
