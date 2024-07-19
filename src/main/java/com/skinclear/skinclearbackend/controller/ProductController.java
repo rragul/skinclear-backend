@@ -1,5 +1,6 @@
 package com.skinclear.skinclearbackend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skinclear.skinclearbackend.dto.ProductDTO;
 import com.skinclear.skinclearbackend.entity.Product;
 import com.skinclear.skinclearbackend.resource.Error;
@@ -8,6 +9,7 @@ import com.skinclear.skinclearbackend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,9 +22,11 @@ import java.util.List;
 public class ProductController extends AbstractController {
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     private  final ProductService productService;
+    private final ObjectMapper objectMapper;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ObjectMapper objectMapper) {
         this.productService = productService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/all")
@@ -92,16 +96,31 @@ public class ProductController extends AbstractController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<GeneralResponse> addProduct(@RequestParam("image") MultipartFile image, @RequestBody ProductDTO product){
+    public ResponseEntity<GeneralResponse> addProduct(
+            @RequestParam("image") MultipartFile image,
+            @RequestPart("product") String productJson) {
         logger.info("request - addProduct | (URL: /api/v1/product) | (Method: POST)");
-        productService.addProduct(product, image);
-        logger.info("response - addProduct | (URL: /api/v1/product) | (Method: POST) | (status: 201)");
-        return ResponseEntity.ok(
-                GeneralResponse.builder()
-                        .success(true)
-                        .data("Product added successfully")
-                        .build()
-        );
+
+        try {
+            // Parse JSON string to ProductDTO
+            ProductDTO product = objectMapper.readValue(productJson, ProductDTO.class);
+            productService.addProduct(product, image);
+            logger.info("response - addProduct | (URL: /api/v1/product) | (Method: POST) | (status: 201)");
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .message("Product added successfully")
+                            .build()
+            );
+        } catch (Exception e) {
+            logger.error("Error adding product", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error adding product")
+                            .build()
+            );
+        }
     }
 
     @PutMapping("/update/{id}")
@@ -113,7 +132,7 @@ public class ProductController extends AbstractController {
             return ResponseEntity.ok(
                     GeneralResponse.builder()
                             .success(true)
-                            .data("Product updated successfully")
+                            .message("Product updated successfully")
                             .build()
             );
         } catch (Exception e) {
@@ -137,7 +156,7 @@ public class ProductController extends AbstractController {
         return ResponseEntity.ok(
                 GeneralResponse.builder()
                         .success(true)
-                        .data("Product deleted successfully")
+                        .message("Product deleted successfully")
                         .build()
         );
     }
