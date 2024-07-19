@@ -172,6 +172,9 @@ public class ProductService {
     }
 
     public Page<Product> getProductsByFilter(String subCategory, String preference, String benefits, String type, String ingredient, String brand, int page, int size) {
+        if (subCategory == null && preference == null && benefits == null && type == null && ingredient == null && brand == null) {
+            return productRepository.findAll(PageRequest.of(page, size));
+        }
         return productRepository.findProductsByFilter(subCategory, preference, benefits, type, ingredient, brand, PageRequest.of(page, size));
     }
 
