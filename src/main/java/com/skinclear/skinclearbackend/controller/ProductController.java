@@ -5,6 +5,7 @@ import com.skinclear.skinclearbackend.dto.ProductDTO;
 import com.skinclear.skinclearbackend.entity.Product;
 import com.skinclear.skinclearbackend.resource.Error;
 import com.skinclear.skinclearbackend.resource.GeneralResponse;
+import com.skinclear.skinclearbackend.resource.SimilarProductResponse;
 import com.skinclear.skinclearbackend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +130,7 @@ public class ProductController extends AbstractController {
    ){
         try {
             logger.info("request - getSimilarProducts | (URL: /api/v1/product/similar) | (Method: GET)");
-            List<Product> similarProducts = productService.getSimilarProducts(productId, size, page);
+            List<SimilarProductResponse> similarProducts = productService.getSimilarProducts(productId, size, page);
             logger.info("response - getSimilarProducts | (URL: /api/v1/product/similar) | (Method: GET) | (status: 200)");
             return ResponseEntity.ok(
                     GeneralResponse.builder()

@@ -5,14 +5,17 @@ import com.skinclear.skinclearbackend.entity.Brand;
 import com.skinclear.skinclearbackend.entity.Ingredient;
 import com.skinclear.skinclearbackend.entity.Product;
 import com.skinclear.skinclearbackend.repository.ProductRepository;
+import com.skinclear.skinclearbackend.resource.SimilarProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -181,13 +184,20 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found with name: " + name));
     }
 
-    public List<Product> getSimilarProducts(Long productId, int size, int page) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Product product = getProductById(productId);
-        return productRepository.findProductByTypeAndIngredients(
-                product.getType(),
-                product.getIngredients(),
-                pageRequest
-        ).toList();
+    public List<SimilarProductResponse> getSimilarProducts(Long productId, int size, int page) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Product> similarProducts = productRepository.findSimilarProducts(productId, pageable);
+
+        Product targetProduct = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+        List<Ingredient> targetIngredients = targetProduct.getIngredients();
+
+        return similarProducts.stream().map(product -> {
+            int matchCount = (int) product.getIngredients().stream()
+                    .filter(targetIngredients::contains)
+                    .count();
+            double matchPercentage = (double) matchCount / targetIngredients.size() * 100;
+
+            return new SimilarProductResponse(product, matchPercentage);
+        }).collect(Collectors.toList());
     }
 }
