@@ -264,7 +264,7 @@ public class ProductController extends AbstractController {
             return ResponseEntity.ok(
                     GeneralResponse.builder()
                             .success(true)
-                            .data(productsByFilter.getContent())
+                            .data(productsByFilter)
                             .build()
             );
         } catch (Exception e) {
