@@ -125,7 +125,7 @@ public class ProductController extends AbstractController {
     public ResponseEntity<GeneralResponse> getSimilarProducts(
             @RequestParam Long productId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "3") int size
    ){
         try {
             logger.info("request - getSimilarProducts | (URL: /api/v1/product/similar) | (Method: GET)");
