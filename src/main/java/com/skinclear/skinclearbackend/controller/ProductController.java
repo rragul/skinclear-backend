@@ -122,10 +122,14 @@ public class ProductController extends AbstractController {
     }
 
    @GetMapping("/similar")
-    public ResponseEntity<GeneralResponse> getSimilarProducts(@RequestParam Long productId){
+    public ResponseEntity<GeneralResponse> getSimilarProducts(
+            @RequestParam Long productId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+   ){
         try {
             logger.info("request - getSimilarProducts | (URL: /api/v1/product/similar) | (Method: GET)");
-            List<Product> similarProducts = productService.getSimilarProducts(productId);
+            List<Product> similarProducts = productService.getSimilarProducts(productId, size, page);
             logger.info("response - getSimilarProducts | (URL: /api/v1/product/similar) | (Method: GET) | (status: 200)");
             return ResponseEntity.ok(
                     GeneralResponse.builder()

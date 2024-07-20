@@ -181,8 +181,13 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found with name: " + name));
     }
 
-    public List<Product> getSimilarProducts(Long productId) {
+    public List<Product> getSimilarProducts(Long productId, int size, int page) {
+        PageRequest pageRequest = PageRequest.of(page, size);
         Product product = getProductById(productId);
-        return productRepository.findProductByTypeAndIngredients(product.getType(), product.getIngredients());
+        return productRepository.findProductByTypeAndIngredients(
+                product.getType(),
+                product.getIngredients(),
+                pageRequest
+        ).toList();
     }
 }

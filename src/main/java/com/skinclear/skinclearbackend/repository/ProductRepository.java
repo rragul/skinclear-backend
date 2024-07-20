@@ -5,6 +5,7 @@ import com.skinclear.skinclearbackend.entity.Ingredient;
 import com.skinclear.skinclearbackend.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -66,6 +67,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     List<Product> findFirst10();
 
     List<Product> findTop10ByNameStartingWithIgnoreCase(String keyword);
-    @Query("SELECT p FROM Product p JOIN p.ingredients i WHERE p.type = :type AND i IN :ingredients GROUP BY p HAVING COUNT(i) >= 3 LIMIT 3")
-    List<Product> findProductByTypeAndIngredients(String type, List<Ingredient> ingredients);
+    @Query("SELECT p FROM Product p JOIN p.ingredients i WHERE p.type = :type AND i IN :ingredients GROUP BY p HAVING COUNT(i) >= 3")
+    Page<Product> findProductByTypeAndIngredients(@Param("type") String type, @Param("ingredients") List<Ingredient> ingredients, Pageable pageable);
+
 }
