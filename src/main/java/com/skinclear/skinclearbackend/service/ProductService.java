@@ -39,11 +39,6 @@ public class ProductService {
     }
 
     public void addProduct(ProductDTO productDTO, MultipartFile image) {
-       productRepository.findProductByName(productDTO.getName())
-                .ifPresent(p -> {
-                    throw new RuntimeException("Product already exists with name: " + productDTO.getName());
-                });
-
         Product product = createProductFromProductDTO(productDTO);
         String fileName = productDTO.getName() + "." + image.getOriginalFilename().split("\\.")[1];
         String imageUrl = s3Service.uploadFile(image,fileName);
@@ -136,10 +131,6 @@ public class ProductService {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
-        productRepository.findProductByName(productDTO.getName())
-                .ifPresent(p -> {
-                    throw new RuntimeException("Product already exists with name: " + productDTO.getName());
-                });
         String imageUrl = existingProduct.getImage();
         if (image != null) {
             String fileName = productDTO.getName() + "." + image.getOriginalFilename().split("\\.")[1];
