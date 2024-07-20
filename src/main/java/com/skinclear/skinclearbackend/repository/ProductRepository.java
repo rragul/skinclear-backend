@@ -71,6 +71,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     Page<Product> findProductByTypeAndIngredients(@Param("type") String type, @Param("ingredients") List<Ingredient> ingredients, Pageable pageable);
 
 
-    @Query("SELECT p FROM Product p WHERE p.id != :productId AND p.category = (SELECT p2.category FROM Product p2 WHERE p2.id = :productId)")
+    @Query("SELECT p FROM Product p WHERE p.id != :productId AND p.type = (SELECT p2.type FROM Product p2 WHERE p2.id = :productId)")
     List<Product> findSimilarProducts(Long productId, Pageable pageable);
 }
