@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -188,16 +190,56 @@ public class ProductService {
         Pageable pageable = PageRequest.of(page, size);
         List<Product> similarProducts = productRepository.findSimilarProducts(productId, pageable);
 
-        Product targetProduct = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-        List<Ingredient> targetIngredients = targetProduct.getIngredients();
+        Product targetProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // Extract target product attributes and ingredients
+        Set<Ingredient> targetIngredients = new HashSet<>(targetProduct.getIngredients());
+
+        // Define Boolean attributes
+        boolean targetVegan = targetProduct.isVegan();
+        boolean targetAlcoholFree = targetProduct.isAlcoholFree();
+        boolean targetFragranceFree = targetProduct.isFragranceFree();
+        boolean targetSiliconeFree = targetProduct.isSiliconeFree();
+        boolean targetSulfateFree = targetProduct.isSulfateFree();
+        boolean targetParabenFree = targetProduct.isParabenFree();
+        boolean targetOilFree = targetProduct.isOilFree();
+        boolean targetFungalAcneSafe = targetProduct.isFungalAcneSafe();
+        boolean targetEuAllergenFree = targetProduct.isEuAllergenFree();
+        boolean targetReefSafe = targetProduct.isReefSafe();
+
+        // Total number of Boolean attributes
+        int totalBooleanAttributes = 10;
 
         return similarProducts.stream().map(product -> {
-            int matchCount = (int) product.getIngredients().stream()
-                    .filter(targetIngredients::contains)
+            // Calculate ingredient similarity using Jacquard coefficient
+            Set<Ingredient> productIngredients = new HashSet<>(product.getIngredients());
+            int intersectionSize = (int) targetIngredients.stream()
+                    .filter(productIngredients::contains)
                     .count();
-            double matchPercentage = (double) matchCount / targetIngredients.size() * 100;
+            int unionSize = (int) (targetIngredients.size() + productIngredients.size() - intersectionSize);
+            double ingredientMatchPercentage = unionSize > 0 ? (double) intersectionSize / unionSize * 100 : 0;
 
-            return new SimilarProductResponse(product, matchPercentage);
+            // Calculate Boolean attribute similarity
+            int booleanAttributeMatchCount = 0;
+            if (targetVegan == product.isVegan()) booleanAttributeMatchCount++;
+            if (targetAlcoholFree == product.isAlcoholFree()) booleanAttributeMatchCount++;
+            if (targetFragranceFree == product.isFragranceFree()) booleanAttributeMatchCount++;
+            if (targetSiliconeFree == product.isSiliconeFree()) booleanAttributeMatchCount++;
+            if (targetSulfateFree == product.isSulfateFree()) booleanAttributeMatchCount++;
+            if (targetParabenFree == product.isParabenFree()) booleanAttributeMatchCount++;
+            if (targetOilFree == product.isOilFree()) booleanAttributeMatchCount++;
+            if (targetFungalAcneSafe == product.isFungalAcneSafe()) booleanAttributeMatchCount++;
+            if (targetEuAllergenFree == product.isEuAllergenFree()) booleanAttributeMatchCount++;
+            if (targetReefSafe == product.isReefSafe()) booleanAttributeMatchCount++;
+
+            double attributeMatchPercentage = (double) booleanAttributeMatchCount / totalBooleanAttributes * 100;
+
+            // Combine the ingredient and attribute match percentages (weighted if necessary)
+            double combinedMatchPercentage = (ingredientMatchPercentage + attributeMatchPercentage) / 2;
+
+            return new SimilarProductResponse(product, ingredientMatchPercentage,attributeMatchPercentage,combinedMatchPercentage);
         }).collect(Collectors.toList());
     }
+
 }

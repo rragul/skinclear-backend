@@ -8,5 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class SimilarProductResponse {
     private Product product;
+    private double ingredientMatchPercentage;
+    private double attributeMatchPercentage;
     private double matchPercentage;
 }
