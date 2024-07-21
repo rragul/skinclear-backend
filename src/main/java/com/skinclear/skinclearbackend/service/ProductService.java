@@ -13,10 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -171,7 +168,10 @@ public class ProductService {
         if (subCategory.isEmpty() && preference.isEmpty() && benefits.isEmpty() && type.isEmpty() && ingredient.isEmpty() && brand.isEmpty()) {
             return productRepository.findAll(PageRequest.of(page, size));
         }
-        return productRepository.findProductsByFilter(subCategory, preference, benefits, type, ingredient, brand, PageRequest.of(page, size));
+        List<String> preferenceList = preference != null && !preference.isEmpty() ? Arrays.asList(preference.split("\\s*,\\s*")) : new ArrayList<>();
+        List<String> ingredientList = ingredient != null && !ingredient.isEmpty() ? Arrays.asList(ingredient.split("\\s*,\\s*")) : new ArrayList<>();
+       // List<String> benefitList = benefits != null && !benefits.isEmpty() ? Arrays.asList(benefits.split("\\s*,\\s*")) : new ArrayList<>();
+        return productRepository.findProductsByFilter(subCategory, preferenceList, benefits, type, ingredientList, brand, PageRequest.of(page, size));
     }
 
     public List<Product> searchProduct(String keyword) {
