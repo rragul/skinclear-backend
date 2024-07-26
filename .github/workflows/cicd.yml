@@ -17,6 +17,13 @@ jobs:
           java-version: '17'
       - name: Build Project
         run: mvn clean install -DskipTests
+
+      - name: List target directory
+        run: ls -al target
+
+      - name: List project root
+        run: ls -al
+
       - name: Login to DockerHub
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build Docker Image
