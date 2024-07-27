@@ -1,10 +1,7 @@
 package com.skinclear.skinclearbackend.controller;
 
 import com.skinclear.skinclearbackend.service.S3Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -23,5 +20,10 @@ public class TestController {
     public String uploadFile(@RequestParam("file")  MultipartFile file) {
         String filename = UUID.randomUUID() + "." + file.getOriginalFilename().split("\\.")[1];
         return s3Service.uploadFile(file, filename);
+    }
+
+    @GetMapping
+    public String test() {
+        return "Server is running...";
     }
 }
