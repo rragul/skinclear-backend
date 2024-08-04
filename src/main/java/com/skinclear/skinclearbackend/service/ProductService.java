@@ -43,7 +43,7 @@ public class ProductService {
     public void addProduct(ProductDTO productDTO, MultipartFile image) {
         Product product = createProductFromProductDTO(productDTO);
         String fileName = productDTO.getName() + "." + image.getOriginalFilename().split("\\.")[1];
-        String imageUrl = s3Service.uploadFile(image,fileName);
+        String imageUrl = s3Service.uploadFile(image,fileName, "product");
         product.setImage(imageUrl);
         productRepository.save(product);
     }
@@ -136,7 +136,7 @@ public class ProductService {
         String imageUrl = existingProduct.getImage();
         if (image != null) {
             String fileName = productDTO.getName() + "." + image.getOriginalFilename().split("\\.")[1];
-            imageUrl = s3Service.uploadFile(image,fileName);
+            imageUrl = s3Service.uploadFile(image,fileName, "product");
         }
         Product product = createProductFromProductDTO(productDTO);
         product.setId(id);
@@ -217,7 +217,7 @@ public class ProductService {
             int intersectionSize = (int) targetIngredients.stream()
                     .filter(productIngredients::contains)
                     .count();
-            int unionSize = (int) (targetIngredients.size() + productIngredients.size() - intersectionSize);
+            int unionSize = targetIngredients.size() + productIngredients.size() - intersectionSize;
             double ingredientMatchPercentage = unionSize > 0 ? (double) intersectionSize / unionSize * 100 : 0;
 
             // Calculate Boolean attribute similarity

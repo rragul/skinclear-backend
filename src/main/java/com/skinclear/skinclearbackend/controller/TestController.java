@@ -19,7 +19,7 @@ public class TestController {
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file")  MultipartFile file) {
         String filename = UUID.randomUUID() + "." + file.getOriginalFilename().split("\\.")[1];
-        return s3Service.uploadFile(file, filename);
+        return s3Service.uploadFile(file, filename, "test");
     }
 
     @GetMapping

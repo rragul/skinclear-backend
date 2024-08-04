@@ -121,15 +121,28 @@ public class IngredientInsightController extends AbstractController{
 
     @DeleteMapping("/delete")
     public ResponseEntity<GeneralResponse> deleteIngredientInsights(@RequestBody List<Long> ids) {
-        logger.info("request - deleteIngredientInsights | (URL: /api/v1/ingredient-insight/delete) | (Method: DELETE)");
-        ingredientInsightService.deleteIngredientInsight(ids);
-        logger.info("response - deleteIngredientInsights | (URL: /api/v1/ingredient-insight/delete) | (Method: DELETE)");
-        return ResponseEntity.ok().body(
-                GeneralResponse.builder()
-                        .success(true)
-                        .message("Ingredient Insight deleted successfully")
-                        .build()
-        );
+        try {
+            logger.info("request - deleteIngredientInsights | (URL: /api/v1/ingredient-insight/delete) | (Method: DELETE)");
+            ingredientInsightService.deleteIngredientInsight(ids);
+            logger.info("response - deleteIngredientInsights | (URL: /api/v1/ingredient-insight/delete) | (Method: DELETE)");
+            return ResponseEntity.ok().body(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .message("Ingredient Insight deleted successfully")
+                            .build()
+            );
+        }
+        catch (Exception e) {
+            logger.error("Error deleting ingredient insight", e);
+            return ResponseEntity.badRequest().body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error deleting ingredient insight")
+                            .error(Error.builder().message(e.getMessage()).build())
+                            .errorType(e.getClass().getName())
+                            .build()
+            );
+        }
     }
 
 }

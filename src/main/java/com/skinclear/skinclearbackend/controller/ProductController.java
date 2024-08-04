@@ -211,15 +211,28 @@ public class ProductController extends AbstractController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<GeneralResponse> deleteProduct(@RequestBody List<Long> ids){
-        logger.info("request - deleteProduct | (URL: /api/v1/product) | (Method: DELETE)");
-        productService.deleteProduct(ids);
-        logger.info("response - deleteProduct | (URL: /api/v1/product) | (Method: DELETE) | (status: 200)");
-        return ResponseEntity.ok(
-                GeneralResponse.builder()
-                        .success(true)
-                        .message("Product deleted successfully")
-                        .build()
-        );
+        try {
+            logger.info("request - deleteProduct | (URL: /api/v1/product) | (Method: DELETE)");
+            productService.deleteProduct(ids);
+            logger.info("response - deleteProduct | (URL: /api/v1/product) | (Method: DELETE) | (status: 200)");
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .message("Product deleted successfully")
+                            .build()
+            );
+        }
+        catch (Exception e) {
+            logger.error("response - deleteProduct | (URL: /api/v1/product) | (Method: DELETE) | (status: 400)");
+            return ResponseEntity.badRequest().body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Error deleting product")
+                            .error(Error.builder().message(e.getMessage()).build())
+                            .errorType(e.getClass().getName())
+                            .build()
+            );
+        }
     }
 
     @GetMapping("/recommendation")

@@ -2,6 +2,7 @@ package com.skinclear.skinclearbackend.controller;
 
 import com.skinclear.skinclearbackend.dto.BrandDTO;
 import com.skinclear.skinclearbackend.entity.Brand;
+import com.skinclear.skinclearbackend.resource.Error;
 import com.skinclear.skinclearbackend.resource.GeneralResponse;
 import com.skinclear.skinclearbackend.service.BrandService;
 import org.slf4j.Logger;
@@ -95,28 +96,56 @@ public class BrandController extends AbstractController{
 
     @PutMapping("/update/{id}")
     public ResponseEntity<GeneralResponse> updateBrand(@RequestBody Brand brand, @PathVariable Long id) {
-        logger.info("request - updateBrand | (URL: /api/v1/brand/update/{brandId}) | (Method: PUT) | (brand: {}) | (brandId: {})", brand, id);
-        brandService.updateBrand(brand, id);
-        logger.info("response - updateBrand | (URL: /api/v1/brand/update/{brandId}) | (Method: PUT) | (status: 200)");
-        return ResponseEntity.ok(
-                GeneralResponse.builder()
-                        .success(true)
-                        .message("Brand updated successfully")
-                        .build()
-        );
+        try {
+            logger.info("request - updateBrand | (URL: /api/v1/brand/update/{brandId}) | (Method: PUT) | (brand: {}) | (brandId: {})", brand, id);
+            brandService.updateBrand(brand, id);
+            logger.info("response - updateBrand | (URL: /api/v1/brand/update/{brandId}) | (Method: PUT) | (status: 200)");
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .message("Brand updated successfully")
+                            .build()
+            );
+        }
+        catch (Exception e) {
+            logger.error("response - updateBrand | (URL: /api/v1/brand/update/{brandId}) | (Method: PUT) | (status: 500)");
+            return ResponseEntity.status(500).body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .error(Error.builder()
+                                    .message(e.getMessage())
+                                    .build()
+                            )
+                            .build()
+            );
+        }
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<GeneralResponse> deleteBrand(@RequestBody List<Long> ids) {
-        logger.info("request - deleteBrand | (URL: /api/v1/brand/delete) | (Method: DELETE) | (ids: {})", ids);
-        brandService.deleteBrand(ids);
-        logger.info("response - deleteBrand | (URL: /api/v1/brand/delete) | (Method: DELETE) | (status: 200)");
-        return ResponseEntity.ok(
-                GeneralResponse.builder()
-                        .success(true)
-                        .message("Brand deleted successfully")
-                        .build()
-        );
+        try {
+            logger.info("request - deleteBrand | (URL: /api/v1/brand/delete) | (Method: DELETE) | (ids: {})", ids);
+            brandService.deleteBrand(ids);
+            logger.info("response - deleteBrand | (URL: /api/v1/brand/delete) | (Method: DELETE) | (status: 200)");
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .message("Brand deleted successfully")
+                            .build()
+            );
+        }
+        catch (Exception e) {
+            logger.error("response - deleteBrand | (URL: /api/v1/brand/delete) | (Method: DELETE) | (status: 500)");
+            return ResponseEntity.status(500).body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .error(Error.builder()
+                                    .message(e.getMessage())
+                                    .build()
+                            )
+                            .build()
+            );
+        }
     }
 
 }
