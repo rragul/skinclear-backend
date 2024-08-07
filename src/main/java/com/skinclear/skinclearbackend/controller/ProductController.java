@@ -130,7 +130,7 @@ public class ProductController extends AbstractController {
    ){
         try {
             logger.info("request - getSimilarProducts | (URL: /api/v1/product/similar) | (Method: GET)");
-            List<SimilarProductResponse> similarProducts = productService.getSimilarProducts(productId, size, page);
+            SimilarProductResponse similarProducts = productService.getSimilarProducts(productId, size, page);
             logger.info("response - getSimilarProducts | (URL: /api/v1/product/similar) | (Method: GET) | (status: 200)");
             return ResponseEntity.ok(
                     GeneralResponse.builder()

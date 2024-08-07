@@ -188,7 +188,7 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found with name: " + name));
     }
 
-    public List<SimilarProductResponse> getSimilarProducts(Long productId, int size, int page) {
+    public SimilarProductResponse getSimilarProducts(Long productId, int size, int page) {
         Pageable pageable = PageRequest.of(page, size);
         List<Product> similarProducts = productRepository.findSimilarProducts(productId, pageable);
 
@@ -213,7 +213,7 @@ public class ProductService {
         // Total number of Boolean attributes
         int totalBooleanAttributes = 10;
 
-        return similarProducts.stream().map(product -> {
+        List<SimilarProductResponse.ProductMatch> responseList = similarProducts.stream().map(product -> {
             // Calculate ingredient similarity using Jacquard coefficient
             Set<Ingredient> productIngredients = new HashSet<>(product.getIngredients());
             int intersectionSize = (int) targetIngredients.stream()
@@ -240,8 +240,14 @@ public class ProductService {
             // Combine the ingredient and attribute match percentages (weighted if necessary)
             double combinedMatchPercentage = (ingredientMatchPercentage + attributeMatchPercentage) / 2;
 
-            return new SimilarProductResponse(product, ingredientMatchPercentage,attributeMatchPercentage,combinedMatchPercentage);
+            return new SimilarProductResponse.ProductMatch(product, ingredientMatchPercentage, attributeMatchPercentage, combinedMatchPercentage);
         }).collect(Collectors.toList());
+
+        // Sort the response list by match percentage in descending order
+        responseList.sort(Comparator.comparingDouble(SimilarProductResponse.ProductMatch::getMatchPercentage).reversed());
+
+        // Return the response with targetProduct and similarProducts
+        return new SimilarProductResponse(targetProduct, responseList);
     }
 
 }
