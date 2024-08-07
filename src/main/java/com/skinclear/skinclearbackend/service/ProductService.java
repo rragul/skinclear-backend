@@ -11,10 +11,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ProductService {
@@ -165,13 +167,13 @@ public class ProductService {
     }
 
     public Page<Product> getProductsByFilter(String subCategory, String preference, String benefits, String type, String ingredient, String brand, int page, int size) {
-        if (subCategory.isEmpty() && preference.isEmpty() && benefits.isEmpty() && type.isEmpty() && ingredient.isEmpty() && brand.isEmpty()) {
+        if (Stream.of(subCategory, preference, benefits, type, ingredient, brand).allMatch(StringUtils::isEmpty)) {
             return productRepository.findAll(PageRequest.of(page, size));
         }
         List<String> preferenceList = preference != null && !preference.isEmpty() ? Arrays.asList(preference.split("\\s*,\\s*")) : new ArrayList<>();
         List<String> ingredientList = ingredient != null && !ingredient.isEmpty() ? Arrays.asList(ingredient.split("\\s*,\\s*")) : new ArrayList<>();
-       // List<String> benefitList = benefits != null && !benefits.isEmpty() ? Arrays.asList(benefits.split("\\s*,\\s*")) : new ArrayList<>();
-        return productRepository.findProductsByFilter(subCategory, preferenceList, benefits, type, ingredientList, brand, PageRequest.of(page, size));
+        List<String> benefitList = benefits != null && !benefits.isEmpty() ? Arrays.asList(benefits.split("\\s*,\\s*")) : new ArrayList<>();
+        return productRepository.findProductsByFilter(subCategory, preferenceList, benefitList, type, ingredientList, brand, PageRequest.of(page, size));
     }
 
     public List<Product> searchProduct(String keyword) {
