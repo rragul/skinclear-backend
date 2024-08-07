@@ -189,8 +189,8 @@ public class ProductService {
     }
 
     public SimilarProductResponse getSimilarProducts(Long productId, int size, int page) {
-        Pageable pageable = PageRequest.of(page, size);
-        List<Product> similarProducts = productRepository.findSimilarProducts(productId, pageable);
+        // Fetch all similar products
+        List<Product> similarProducts = productRepository.findSimilarProducts(productId);
 
         Product targetProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -246,8 +246,14 @@ public class ProductService {
         // Sort the response list by match percentage in descending order
         responseList.sort(Comparator.comparingDouble(SimilarProductResponse.ProductMatch::getMatchPercentage).reversed());
 
+        // Apply pagination to the sorted list
+        int start = Math.min(page * size, responseList.size());
+        int end = Math.min((page + 1) * size, responseList.size());
+        List<SimilarProductResponse.ProductMatch> paginatedList = responseList.subList(start, end);
+
         // Return the response with targetProduct and similarProducts
-        return new SimilarProductResponse(targetProduct, responseList);
+        return new SimilarProductResponse(targetProduct, paginatedList);
     }
+
 
 }

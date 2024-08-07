@@ -105,5 +105,5 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
 
     @Query("SELECT p FROM Product p WHERE p.id != :productId AND p.type = (SELECT p2.type FROM Product p2 WHERE p2.id = :productId)")
-    List<Product> findSimilarProducts(Long productId, Pageable pageable);
+    List<Product> findSimilarProducts(Long productId);
 }
