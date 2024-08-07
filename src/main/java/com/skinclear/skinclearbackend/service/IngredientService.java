@@ -181,6 +181,25 @@ public class IngredientService {
                 getProductCount(ingredient)
         );
     }
+
+    public List<IngredientResponse> getIngredientsByNames(String names) {
+        List<String> nameList = Arrays.asList(names.split(","));
+        List<Ingredient> ingredients = ingredientRepository.findByNameOrOtherNames(nameList);
+        return ingredients.stream().map(ingredient -> new IngredientResponse(
+                ingredient.getId(),
+                ingredient.getName(),
+                ingredient.getWhatItDoes(),
+                ingredient.getOtherNames(),
+                ingredient.getRarity(),
+                ingredient.getLikeCount(),
+                ingredient.getDislikeCount(),
+                ingredient.getExplain(),
+                ingredient.getWhatItIs().stream().toList(),
+                ingredient.getBenefits().stream().toList(),
+                ingredient.getConcern().stream().toList(),
+                getProductCount(ingredient)
+        )).collect(Collectors.toList());
+    }
 }
 
 

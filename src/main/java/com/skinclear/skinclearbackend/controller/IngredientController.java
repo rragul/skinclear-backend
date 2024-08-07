@@ -187,4 +187,30 @@ public class IngredientController extends AbstractController{
             );
         }
     }
+
+    @GetMapping("/checker")
+    public ResponseEntity<GeneralResponse> getIngredientsByNames(@RequestParam String names) {
+        try {
+            logger.info("request - getIngredientsByNames | (URL: /api/v1/ingredient/checker) | (Method: POST) | (names: {})", names);
+            List<IngredientResponse> ingredients = ingredientService.getIngredientsByNames(names);
+            logger.info("response - getIngredientsByNames | (URL: /api/v1/ingredient/checker) | (Method: POST) | (status: 200)");
+            return ResponseEntity.ok(
+                    GeneralResponse.builder()
+                            .success(true)
+                            .data(ingredients)
+                            .build()
+            );
+        } catch (Exception e) {
+            logger.error("response - getIngredientsByNames | (URL: /api/v1/ingredient/checker) | (Method: POST) | (status: 404)");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    GeneralResponse.builder()
+                            .success(false)
+                            .message("Ingredients not found")
+                            .build()
+            );
+        }
+    }
+
+
+
 }

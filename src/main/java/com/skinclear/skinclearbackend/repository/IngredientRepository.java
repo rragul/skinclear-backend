@@ -19,4 +19,7 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long>{
     List<Ingredient> findFirst10();
 
     Optional<Ingredient> findByNameIgnoreCase(String name);
+
+    @Query("SELECT i FROM Ingredient i WHERE i.name IN :names OR i.otherNames IN :names")
+    List<Ingredient> findByNameOrOtherNames(List<String> names);
 }
