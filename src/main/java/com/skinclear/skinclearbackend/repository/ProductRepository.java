@@ -64,6 +64,35 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
             PageRequest pageRequest
     );
 
+//    @Query("SELECT DISTINCT p FROM Product p LEFT JOIN p.ingredients i LEFT JOIN i.benefits b WHERE " +
+//            "(:subCategory IS NULL OR :subCategory = '' OR p.subcategory = :subCategory) AND " +
+//            "(:#{#preferenceList.isEmpty()} = true OR " +
+//            "    (COALESCE(:#{#preferenceList.contains('vegan')}, false) = false OR p.vegan = true) AND " +
+//            "    (COALESCE(:#{#preferenceList.contains('alcohol_free')}, false) = false OR p.alcoholFree = true) AND " +
+//            "    (COALESCE(:#{#preferenceList.contains('fragrance_free')}, false) = false OR p.fragranceFree = true) AND " +
+//            "    (COALESCE(:#{#preferenceList.contains('silicone_free')}, false) = false OR p.siliconeFree = true) AND " +
+//            "    (COALESCE(:#{#preferenceList.contains('sulfate_free')}, false) = false OR p.sulfateFree = true) AND " +
+//            "    (COALESCE(:#{#preferenceList.contains('paraben_free')}, false) = false OR p.parabenFree = true) AND " +
+//            "    (COALESCE(:#{#preferenceList.contains('oil_free')}, false) = false OR p.oilFree = true) AND " +
+//            "    (COALESCE(:#{#preferenceList.contains('fungal_acne_safe')}, false) = false OR p.fungalAcneSafe = true) AND " +
+//            "    (COALESCE(:#{#preferenceList.contains('eu_allergen_free')}, false) = false OR p.euAllergenFree = true) AND " +
+//            "    (COALESCE(:#{#preferenceList.contains('reef_safe')}, false) = false OR p.reefSafe = true) " +
+//            ") AND " +
+//            "(:benefits IS NULL OR :benefits = '' OR EXISTS (SELECT 1 FROM p.ingredients ing JOIN ing.benefits b WHERE LOWER(b.name) IN :benefits)) AND " +
+//            "(:type IS NULL OR :type = '' OR p.type = :type) AND " +
+//            "(:#{#ingredientList.isEmpty()} = true OR " +
+//            "    (SELECT COUNT(ing) FROM p.ingredients ing WHERE ing.name IN :ingredientList) >= :#{#ingredientList.size()}) AND " +
+//            "(:brand IS NULL OR :brand = '' OR p.brand.name = :brand)")
+//    Page<Product> findProductsByFilter(
+//            @Param("subCategory") String subCategory,
+//            @Param("preferenceList") List<String> preferenceList,
+//            @Param("benefits") List<String> benefits,
+//            @Param("type") String type,
+//            @Param("ingredientList") List<String> ingredientList,
+//            @Param("brand") String brand,
+//            PageRequest pageRequest
+//    );
+
     @Query("SELECT DISTINCT p FROM Product p LEFT JOIN p.ingredients i LEFT JOIN i.benefits b WHERE " +
             "(:subCategory IS NULL OR :subCategory = '' OR p.subcategory = :subCategory) AND " +
             "(:#{#preferenceList.isEmpty()} = true OR " +
@@ -78,7 +107,8 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
             "    (COALESCE(:#{#preferenceList.contains('eu_allergen_free')}, false) = false OR p.euAllergenFree = true) AND " +
             "    (COALESCE(:#{#preferenceList.contains('reef_safe')}, false) = false OR p.reefSafe = true) " +
             ") AND " +
-            "(:benefits IS NULL OR :benefits = '' OR EXISTS (SELECT 1 FROM p.ingredients ing JOIN ing.benefits b WHERE LOWER(b.name) IN :benefits)) AND " +
+            "(:#{#benefits.isEmpty()} = true OR " +
+            "    (SELECT COUNT(DISTINCT b.name) FROM p.ingredients ing JOIN ing.benefits b WHERE LOWER(b.name) IN :benefits) = :#{#benefits.size()}) AND " +
             "(:type IS NULL OR :type = '' OR p.type = :type) AND " +
             "(:#{#ingredientList.isEmpty()} = true OR " +
             "    (SELECT COUNT(ing) FROM p.ingredients ing WHERE ing.name IN :ingredientList) >= :#{#ingredientList.size()}) AND " +
@@ -92,6 +122,8 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
             @Param("brand") String brand,
             PageRequest pageRequest
     );
+
+
 
     @Query("SELECT COUNT(p) FROM Product p JOIN p.ingredients i WHERE i.id = :ingredientId")
     int countProductsByIngredientId(@Param("ingredientId") Long ingredientId);
