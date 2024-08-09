@@ -183,8 +183,12 @@ public class IngredientService {
     }
 
     public List<IngredientResponse> getIngredientsByNames(String names) {
-        List<String> nameList = Arrays.asList(names.split(","));
+        List<String> nameList = Arrays.stream(names.split(","))
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+
         List<Ingredient> ingredients = ingredientRepository.findByNameOrOtherNames(nameList);
+
         return ingredients.stream().map(ingredient -> new IngredientResponse(
                 ingredient.getId(),
                 ingredient.getName(),
@@ -200,6 +204,7 @@ public class IngredientService {
                 getProductCount(ingredient)
         )).collect(Collectors.toList());
     }
+
 }
 
 
