@@ -19,7 +19,7 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long>{
 
     Optional<Ingredient> findByNameIgnoreCase(String name);
 
-    @Query(value = "SELECT * FROM Ingredient i WHERE LOWER(i.name) IN :names OR EXISTS (SELECT 1 FROM unnest(string_to_array(LOWER(i.other_names), ',')) AS name WHERE name IN :names)", nativeQuery = true)
+    @Query(value = "SELECT * FROM Ingredient i WHERE LOWER(i.name) IN :names OR EXISTS (SELECT 1 FROM unnest(string_to_array(LOWER(i.other_names), ',')) AS oname WHERE oname IN :names)", nativeQuery = true)
     List<Ingredient> findByNameOrOtherNames(@Param("names") List<String> names);
 
 
