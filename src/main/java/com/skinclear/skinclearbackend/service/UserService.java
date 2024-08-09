@@ -44,9 +44,21 @@ public class UserService {
 
         User newUser = new User();
         if (image != null) {
-            String fileName = user.getUserName() + "." + image.getOriginalFilename().split("\\.")[1];
-            String imageUrl = s3Service.uploadFile(image,fileName, "user");
-            newUser.setProfilePicture(imageUrl);
+            String originalFilename = image.getOriginalFilename();
+            if (originalFilename != null && originalFilename.contains(".")) {
+                String[] parts = originalFilename.split("\\.");
+                if (parts.length > 1) {
+                    String fileName = user.getUserName() + "." + parts[1];
+                    String imageUrl = s3Service.uploadFile(image, fileName, "user");
+                    newUser.setProfilePicture(imageUrl);
+                } else {
+                    // Handle case where there's no extension
+                    throw new RuntimeException("Invalid image file name");
+                }
+            } else {
+                // Handle case where there's no dot in the filename
+                throw new RuntimeException("Invalid image file name");
+            }
         }
         newUser.setEmail(user.getEmail());
         newUser.setUserName(user.getUserName());
