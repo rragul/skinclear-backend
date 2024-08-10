@@ -8,6 +8,7 @@ import com.skinclear.skinclearbackend.dto.IngredientInsightDTO;
 import com.skinclear.skinclearbackend.service.IngredientInsightService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +31,12 @@ public class IngredientInsightController extends AbstractController{
     @GetMapping
     public ResponseEntity<GeneralResponse> getIngredientInsights(@RequestParam int page , @RequestParam int size) {
         logger.info("request - getIngredientInsights | (URL: /api/v1/ingredient-insight) | (Method: GET) | (page: {}) | (size: {})", page, size);
-        ingredientInsightService.getIngredientInsightWithPagination(page, size);
+        Page<IngredientInsight> ingredientInsightWithPagination = ingredientInsightService.getIngredientInsightWithPagination(page, size);
         logger.info("response - getIngredientInsights | (URL: /api/v1/ingredient-insight) | (Method: GET) | (page: {}) | (size: {})", page, size);
         return ResponseEntity.ok().body(
                 GeneralResponse.builder()
                         .success(true)
-                        .data(ingredientInsightService.getIngredientInsightWithPagination(page, size))
+                        .data(ingredientInsightWithPagination)
                         .build()
         );
     }

@@ -3,11 +3,13 @@ package com.skinclear.skinclearbackend.resource;
 import com.skinclear.skinclearbackend.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class SimilarProductResponse {
     private Product targetProduct;
     private List<ProductMatch> similarProducts;
