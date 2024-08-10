@@ -79,8 +79,14 @@ public class RoutineService {
                 .orElseThrow(() -> new RuntimeException("Routine not found"));
         Product product = productService.getProductById(productId);
         if (type.equals("morning")) {
+            if (routine.getMorningProducts().contains(product)) {
+                throw new RuntimeException("Product already exists in the routine");
+            }
             routine.getMorningProducts().add(product);
         } else {
+            if (routine.getEveningProducts().contains(product)) {
+                throw new RuntimeException("Product already exists in the routine");
+            }
             routine.getEveningProducts().add(product);
         }
         routineRepository.save(routine);
