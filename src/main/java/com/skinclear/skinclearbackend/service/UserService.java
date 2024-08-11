@@ -88,6 +88,7 @@ public class UserService {
         userResource.setSkinConcerns(user.getSkinConcerns());
         userResource.setSkinType(user.getSkinType());
         userResource.setProductPreference(user.getProductPreference());
+        userResource.setAdmin(user.isAdmin());
         return userResource;
     }
 

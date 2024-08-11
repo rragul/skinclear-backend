@@ -20,4 +20,5 @@ public class UserResource {
     private String skinType;
     private String skinConcerns;
     private String productPreference;
+    private  boolean isAdmin;
 }
