@@ -8,8 +8,12 @@ import com.skinclear.skinclearbackend.resource.RatingResource;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RatingService {
@@ -48,14 +52,37 @@ public class RatingService {
         String email = principal.getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Retrieve the ratings for the last 7 days
         List<Rating> ratings = ratingRepository.findLastSevenDaysByUserId(user.getId());
-        return ratings.stream()
-                .map(r -> {
-                    RatingResource ratingResource = new RatingResource();
-                    ratingResource.setDay(r.getDate().getDayOfWeek().name());
-                    ratingResource.setRating(r.getRating());
-                    return ratingResource;
-                })
-                .toList();
+
+        Map<DayOfWeek, RatingResource> ratingMap = ratings.stream()
+                .collect(Collectors.toMap(
+                        r -> r.getDate().getDayOfWeek(),
+                        r -> {
+                            RatingResource ratingResource = new RatingResource();
+                            ratingResource.setDay(r.getDate().getDayOfWeek().name());
+                            ratingResource.setRating(r.getRating());
+                            return ratingResource;
+                        }
+                ));
+
+        // Create a list of RatingResource for the last 7 days, filling in missing days with a rating of 0
+        List<RatingResource> ratingResources = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = LocalDate.now().minusDays(i);
+            DayOfWeek dayOfWeek = date.getDayOfWeek();
+
+            RatingResource ratingResource = ratingMap.getOrDefault(dayOfWeek, new RatingResource());
+            if (ratingResource.getDay() == null) {
+                ratingResource.setDay(dayOfWeek.name());
+                ratingResource.setRating(0);
+            }
+
+            ratingResources.add(ratingResource);
+        }
+
+        return ratingResources;
     }
+
 }
