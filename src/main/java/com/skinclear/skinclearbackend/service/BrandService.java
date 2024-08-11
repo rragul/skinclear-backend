@@ -84,7 +84,7 @@ public class BrandService {
     }
 
     @Transactional
-    public void updateBrand(Brand brand, Long id) {
+    public void updateBrand(BrandDTO brand, Long id) {
         Brand existingBrand = brandRepository.findById(id).
                 orElseThrow(() -> new RuntimeException("Brand does not exist"));
 

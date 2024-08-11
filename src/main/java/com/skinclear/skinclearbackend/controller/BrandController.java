@@ -95,7 +95,7 @@ public class BrandController extends AbstractController{
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<GeneralResponse> updateBrand(@RequestBody Brand brand, @PathVariable Long id) {
+    public ResponseEntity<GeneralResponse> updateBrand(@RequestBody BrandDTO brand, @PathVariable Long id) {
         try {
             logger.info("request - updateBrand | (URL: /api/v1/brand/update/{brandId}) | (Method: PUT) | (brand: {}) | (brandId: {})", brand, id);
             brandService.updateBrand(brand, id);

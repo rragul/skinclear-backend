@@ -131,9 +131,11 @@ class BrandServiceTest {
     @Test
     void testUpdateBrand_Success() {
         // Arrange
-        Brand brand = new Brand();
+        BrandDTO brand = new BrandDTO();
         brand.setName("BrandA");
-        when(brandRepository.findById(1L)).thenReturn(Optional.of(brand));
+        when(brandRepository.findById(1L)).thenReturn(
+                Optional.of(new Brand())
+        );
         when(brandRepository.findByName("BrandA")).thenReturn(Optional.empty());
 
         // Act
@@ -146,7 +148,7 @@ class BrandServiceTest {
     @Test
     void testUpdateBrand_Failure() {
         // Arrange
-        Brand brand = new Brand();
+        BrandDTO brand = new BrandDTO();
         brand.setName("BrandA");
         when(brandRepository.findById(1L)).thenReturn(Optional.empty());
 

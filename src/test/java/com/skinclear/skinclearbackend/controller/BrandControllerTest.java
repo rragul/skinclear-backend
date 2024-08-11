@@ -110,7 +110,7 @@ class BrandControllerTest {
     @Test
     void testUpdateBrand() {
         Long id = 1L;
-        Brand brand = new Brand();
+        BrandDTO brand = new BrandDTO();
 
         ResponseEntity<GeneralResponse> response = brandController.updateBrand(brand, id);
 
