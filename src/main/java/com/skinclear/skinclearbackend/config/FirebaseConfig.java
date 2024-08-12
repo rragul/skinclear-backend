@@ -22,6 +22,7 @@ public class FirebaseConfig {
 
     @PostConstruct
     public FirebaseApp firebaseApp() {
+        log.info("Attempting to initialize Firebase with path: " + firebaseAdminSdk);
         try {
             InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(firebaseAdminSdk);
             if (resourceAsStream != null) {
