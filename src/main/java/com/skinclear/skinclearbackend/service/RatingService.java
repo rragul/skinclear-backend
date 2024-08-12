@@ -11,6 +11,7 @@ import java.security.Principal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -81,7 +82,7 @@ public class RatingService {
 
             ratingResources.add(ratingResource);
         }
-
+        Collections.reverse(ratingResources);
         return ratingResources;
     }
 

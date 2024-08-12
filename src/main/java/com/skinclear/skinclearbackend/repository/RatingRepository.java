@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface RatingRepository extends JpaRepository<Rating, Long> {
+    @Query(value = "SELECT * FROM rating WHERE user_id = ?1 AND date = current_date", nativeQuery = true)
     Optional<Rating> findByUserIdAndDate(Long id, LocalDate date);
 
     @Query(value = "SELECT * FROM rating WHERE user_id = ?1 AND date >= current_date - interval '6 days'", nativeQuery = true)
