@@ -53,4 +53,7 @@ jobs:
       - name: Delete Old Container
         run: sudo docker rm -f skin-clear-container || true
       - name: Run Docker Container
-        run: sudo docker run --env-file ~/.env -d -p 8080:8080 --name skin-clear-container ${{ secrets.DOCKERHUB_USERNAME }}/skin-clear:latest
+        run: |
+            sudo docker run --env-file ~/.env -d -p 8080:8080 \
+            -v /home/ubuntu/serviceAccountKey.json:/app/path/to/serviceAccountKey.json \
+            --name skin-clear-container ${{ secrets.DOCKERHUB_USERNAME }}/skin-clear:latest
