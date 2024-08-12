@@ -14,6 +14,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/routine")
 public class RoutineController {
     private final RoutineService routineService;

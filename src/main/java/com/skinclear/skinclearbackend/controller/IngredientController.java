@@ -1,7 +1,6 @@
 package com.skinclear.skinclearbackend.controller;
 
 import com.skinclear.skinclearbackend.dto.IngredientDTO;
-import com.skinclear.skinclearbackend.entity.Ingredient;
 import com.skinclear.skinclearbackend.resource.GeneralResponse;
 import com.skinclear.skinclearbackend.resource.IngredientResponse;
 import com.skinclear.skinclearbackend.service.IngredientService;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/ingredient")
 public class IngredientController extends AbstractController{
 
