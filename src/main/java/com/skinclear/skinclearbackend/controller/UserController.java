@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/user")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);

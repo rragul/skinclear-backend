@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final static Logger logger = LoggerFactory.getLogger(AuthController.class);
