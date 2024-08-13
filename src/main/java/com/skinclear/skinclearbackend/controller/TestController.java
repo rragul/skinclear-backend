@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "http://d2azwxcl0602xy.cloudfront.net")
+@CrossOrigin(origins = "http://d2azwxcl0602xy.cloudfront.net, http://skin-clear-sites.s3-website-ap-southeast-1.amazonaws.com")
 @RequestMapping("/api/v1/test")
 public class TestController {
 
