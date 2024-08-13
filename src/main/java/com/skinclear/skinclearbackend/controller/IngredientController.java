@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://d2azwxcl0602xy.cloudfront.net, http://skin-clear-sites.s3-website-ap-southeast-1.amazonaws.com")
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/ingredient")
 public class IngredientController extends AbstractController{
 

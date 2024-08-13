@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://d2azwxcl0602xy.cloudfront.net, http://skin-clear-sites.s3-website-ap-southeast-1.amazonaws.com")
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/product")
 public class ProductController extends AbstractController {
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);

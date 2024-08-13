@@ -14,7 +14,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://d2azwxcl0602xy.cloudfront.net, http://skin-clear-sites.s3-website-ap-southeast-1.amazonaws.com")
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/routine")
 public class RoutineController {
     private final RoutineService routineService;
